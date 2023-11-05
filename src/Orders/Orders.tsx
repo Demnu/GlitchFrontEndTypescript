@@ -85,12 +85,12 @@ const Orders = () => {
     {
       field: "dateCreated",
       headerName: "Order Date",
-      width: 170,
+      width: 120,
     },
     {
       field: "products",
       headerName: "Products",
-      width: 3000,
+      width: 8000,
       renderCell: (params: GridRenderCellParams<unknown, OrderDto>) => {
         return (
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
