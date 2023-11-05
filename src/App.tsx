@@ -1,3 +1,18 @@
+import { Box } from "@mui/material";
+import { Orders } from "./Orders/Orders";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 export default function App() {
-  return <h1 className="text-2xl font-bold underline">Hello world!</h1>;
+  const queryClient = new QueryClient();
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <Box>
+          <Orders />
+        </Box>
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      </QueryClientProvider>
+    </>
+  );
 }
