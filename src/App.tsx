@@ -34,7 +34,7 @@ export default function App() {
             <Orders />
           </Box>
         </Box>
-        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-left" />
       </QueryClientProvider>
     </>
   );

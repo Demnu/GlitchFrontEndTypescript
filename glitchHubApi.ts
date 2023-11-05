@@ -16,6 +16,7 @@ export type OrderDtos = {
   dateCreated: string;
   /** @example "Harry" */
   customerName: string;
+  orderStatus: 'notCalculated' | 'calculated';
   products: {
     /** @example "Haywire Blend" */
     productName: string;
@@ -29,6 +30,8 @@ export type OrderDtos = {
     sku: string;
     /** @example 20 */
     amountOrdered: number;
+    /** @example true */
+    hasRecipe: boolean;
   }[];
 }[];
 
@@ -39,6 +42,12 @@ export interface OrderDto {
   dateCreated: string;
   /** @example "Harry" */
   customerName: string;
+  orderStatus: {
+    /** @example "string" */
+    type?: string;
+    /** @example ["notCalculated","calculated"] */
+    enum?: string[];
+  };
   products: {
     /** @example "Haywire Blend" */
     productName: string;
@@ -52,6 +61,8 @@ export interface OrderDto {
     sku: string;
     /** @example 20 */
     amountOrdered: number;
+    /** @example true */
+    hasRecipe: boolean;
   }[];
 }
 
@@ -140,6 +151,12 @@ export interface ProductExtendedJsonSchema {
   sku: string;
   /** @example 20 */
   amountOrdered: number;
+  /** @example true */
+  hasRecipe: boolean;
+}
+
+export interface OrderStatusEnum {
+  orderStatus: 'notCalculated' | 'calculated';
 }
 
 import type {
