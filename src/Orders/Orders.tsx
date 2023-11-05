@@ -117,7 +117,7 @@ const Orders = () => {
           disabled={selectedOrders.length <= 0}
           onClick={calculateOrdersOnClickHandler}
         >
-          Calculate Orders
+          {selectedOrders.length <= 0 ? "Select Orders" : "Calculate Orders"}
         </Button>
         <OrdersTableFilters />
       </Box>
