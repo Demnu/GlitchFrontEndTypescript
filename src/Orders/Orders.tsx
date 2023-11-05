@@ -2,9 +2,9 @@ import { useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { api } from "../myApi";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Chip } from "@mui/material";
+import { Box, Chip, Paper } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { ProductExtendedDto } from "../../glitchHubApi";
+import { OrderDtos, OrderDto } from "../../glitchHubApi";
 
 const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState([]);
@@ -22,19 +22,21 @@ const Orders = () => {
   //     setSelectedOrders(item);
   //   };
 
-  const ordersFormatted = orders?.data.map((order) => {
-    const dateCreated = order.dateCreated;
-    let date: Date = new Date();
-    if (dateCreated) {
-      date = new Date(dateCreated);
-    }
-    return {
-      id: order.orderId,
-      customerName: order.customerName,
-      products: order.products ? order.products : [],
-      dateCreated: date.toLocaleDateString(),
-    };
-  });
+  const ordersFormatted: OrderDtos = orders?.data
+    ? orders?.data.map((order) => {
+        const dateCreated = order.dateCreated;
+        let date: Date = new Date();
+        if (dateCreated) {
+          date = new Date(dateCreated);
+        }
+        return {
+          id: order.id,
+          customerName: order.customerName,
+          products: order.products ? order.products : [],
+          dateCreated: date.toLocaleDateString(),
+        };
+      })
+    : [];
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "Order ID", width: 90 },
@@ -53,18 +55,17 @@ const Orders = () => {
       field: "products",
       headerName: "Products",
       width: 3000,
-      renderCell: (params: GridRenderCellParams<unknown, any>) => {
+      renderCell: (params: GridRenderCellParams<unknown, OrderDto>) => {
         return (
-          <div>
-            {console.log(params.row.products)}
-
+          <Box sx={{ display: "flex", gap: "0.5rem" }}>
             {params.row.products.map((product) => (
               <Chip
+                variant="outlined"
                 key={product.id}
                 label={`${product.productName} - ${product.amountOrdered}`}
               />
             ))}
-          </div>
+          </Box>
         );
       },
     },
@@ -75,37 +76,31 @@ const Orders = () => {
   };
 
   return (
-    <div className="restOfScreenHeight mx-2 flex flex-col">
-      <div
-        className={` flex flex-grow flex-col ${showRoastingList && "hidden"}`}
+    <>
+      <button
+        onClick={calculateOrdersOnClickHandler}
+        className={
+          "w-52 rounded-sm bg-blue-700 py-2 text-center text-white hover:bg-blue-500"
+        }
       >
-        <div className=" my-2 flex">
-          <button
-            onClick={calculateOrdersOnClickHandler}
-            className={
-              "w-52 rounded-sm bg-blue-700 py-2 text-center text-white hover:bg-blue-500"
-            }
-          >
-            Calculate Orders
-          </button>
-        </div>
-        <Box sx={{ bgcolor: grey[300], width: "90rem", height: "40rem" }}>
-          {!!orders?.data &&
-            orders?.data.length > 0 &&
-            !!ordersFormatted &&
-            ordersFormatted?.length > 0 && (
-              <DataGrid
-                loading={isLoading}
-                rows={ordersFormatted}
-                columns={columns}
-                checkboxSelection
-                disableSelectionOnClick
-                density="compact"
-                //   onSelectionModelChange={(item) => handleSelection(item)}
-              />
-            )}
-        </Box>
-      </div>
+        Calculate Orders
+      </button>
+      <Paper sx={{ flexGrow: 1 }}>
+        {!!orders?.data &&
+          orders?.data.length > 0 &&
+          !!ordersFormatted &&
+          ordersFormatted?.length > 0 && (
+            <DataGrid
+              loading={isLoading}
+              rows={ordersFormatted}
+              columns={columns}
+              checkboxSelection
+              disableSelectionOnClick
+              density="compact"
+              //   onSelectionModelChange={(item) => handleSelection(item)}
+            />
+          )}
+      </Paper>
       {/* <div
         className={`${!showRoastingList && " hidden"} flex h-screen flex-col`}
       >
@@ -116,7 +111,7 @@ const Orders = () => {
           />
         )}
       </div> */}
-    </div>
+    </>
   );
 };
 export { Orders };

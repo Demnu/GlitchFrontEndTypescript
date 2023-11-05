@@ -11,26 +11,49 @@
 
 export type OrderDtos = {
   /** @example "123" */
-  orderId?: string;
+  id: string;
   /** @example "08/09/1998" */
-  dateCreated?: string;
+  dateCreated: string;
   /** @example "Harry" */
-  customerName?: string;
-  products?: {
+  customerName: string;
+  products: {
     /** @example "Haywire Blend" */
-    productName?: string;
+    productName: string;
     /** @example "12345" */
-    id?: string;
+    id: string;
     /** @example true */
-    possiblyCoffee?: boolean;
+    possiblyCoffee: boolean;
     /** @example 123 */
-    price?: number;
+    price: number;
     /** @example "HW_B" */
-    sku?: string;
+    sku: string;
     /** @example 20 */
-    amountOrdered?: number;
+    amountOrdered: number;
   }[];
 }[];
+
+export interface OrderDto {
+  /** @example "123" */
+  id: string;
+  /** @example "08/09/1998" */
+  dateCreated: string;
+  /** @example "Harry" */
+  customerName: string;
+  products: {
+    /** @example "Haywire Blend" */
+    productName: string;
+    /** @example "12345" */
+    id: string;
+    /** @example true */
+    possiblyCoffee: boolean;
+    /** @example 123 */
+    price: number;
+    /** @example "HW_B" */
+    sku: string;
+    /** @example 20 */
+    amountOrdered: number;
+  }[];
+}
 
 export type RecipeDtos = {
   /** @example 1234 */
@@ -104,19 +127,19 @@ export interface MakeCalculationResponseDto {
   }[];
 }
 
-export interface ProductExtendedDto {
+export interface ProductExtendedJsonSchema {
   /** @example "Haywire Blend" */
-  productName?: string;
+  productName: string;
   /** @example "12345" */
-  id?: string;
+  id: string;
   /** @example true */
-  possiblyCoffee?: boolean;
+  possiblyCoffee: boolean;
   /** @example 123 */
-  price?: number;
+  price: number;
   /** @example "HW_B" */
-  sku?: string;
+  sku: string;
   /** @example 20 */
-  amountOrdered?: number;
+  amountOrdered: number;
 }
 
 import type {
