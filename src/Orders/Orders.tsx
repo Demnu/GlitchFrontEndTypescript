@@ -16,6 +16,7 @@ import {
 import { ProductChip } from "./ProductChip";
 import { OrdersTableFilters } from "./OrdersTableFilters";
 import { useOrdersTableFiltersStore } from "./OrdersTableFiltersStore";
+import { OrdersLegend } from "./OrdersLegend";
 const makeCalculation = async (selectedIds: string[]) => {
   const request: MakeCalculationRequestDto = { orderIds: selectedIds };
   return await api.calculations.makeCalculationCreate(request);
@@ -121,16 +122,19 @@ const Orders = () => {
         <OrdersTableFilters />
       </Box>
 
-      <Paper sx={{ flexGrow: 1 }}>
-        <DataGrid
-          loading={isLoading}
-          rows={filteredOrders}
-          columns={columns}
-          checkboxSelection
-          disableSelectionOnClick
-          density="compact"
-          onSelectionModelChange={(item) => handleSelection(item)}
-        />
+      <Paper sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+        <OrdersLegend />
+        <Box sx={{ flexGrow: 1 }}>
+          <DataGrid
+            loading={isLoading}
+            rows={filteredOrders}
+            columns={columns}
+            checkboxSelection
+            disableSelectionOnClick
+            density="compact"
+            onSelectionModelChange={(item) => handleSelection(item)}
+          />
+        </Box>
       </Paper>
       {/* <div
         className={`${!showRoastingList && " hidden"} flex h-screen flex-col`}

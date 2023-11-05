@@ -19,6 +19,7 @@ const OrdersTableFilters = () => {
             }
           >
             <ToggleButton
+              size="small"
               value="left"
               aria-label="left aligned"
               onClick={changeHideCalculatedOrders}
