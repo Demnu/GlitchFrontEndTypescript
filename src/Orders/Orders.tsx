@@ -113,6 +113,7 @@ const Orders = () => {
     <>
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Button
+          size="large"
           variant={selectedOrders.length <= 0 ? "outlined" : "contained"}
           disabled={selectedOrders.length <= 0}
           onClick={calculateOrdersOnClickHandler}

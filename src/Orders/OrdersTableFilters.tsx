@@ -10,7 +10,14 @@ const OrdersTableFilters = () => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Paper>
+        <Paper
+          sx={{
+            display: "flex",
+            gap: "0.5rem",
+            alignItems: "center",
+            padding: "0.2rem",
+          }}
+        >
           <Tooltip
             title={
               hideCalculatedOrders
@@ -31,10 +38,12 @@ const OrdersTableFilters = () => {
               )}
             </ToggleButton>
           </Tooltip>
+          {hideCalculatedOrders && (
+            <Box sx={{ color: red[700], fontSize: "14px" }}>
+              Hiding calculated orders
+            </Box>
+          )}
         </Paper>
-        <Box sx={{ color: red[700] }}>
-          {hideCalculatedOrders && "Hiding calculated orders"}
-        </Box>
       </Box>
     </Box>
   );
