@@ -111,9 +111,8 @@ const Orders = () => {
             {params.row.products.map((product, i) => {
               // find corresponding recipe if not undefined
               const recipe = recipes?.data.find((r) =>
-                r.recipeName.includes(product.productName)
+                r?.recipeName?.includes(product.productName)
               );
-              console.log(recipe);
 
               return (
                 <ProductChip
@@ -121,6 +120,7 @@ const Orders = () => {
                   product={product}
                   recipe={recipe}
                   refetchRecipes={refetchRecipes}
+                  refetchOrders={refetch}
                 />
               );
             })}
@@ -162,9 +162,8 @@ const Orders = () => {
             {params.row.products.map((product, i) => {
               // find corresponding recipe if not undefined
               const recipe = recipes?.data.find((r) =>
-                r.recipeName.includes(product.productName)
+                r?.recipeName?.includes(product.productName)
               );
-              console.log(recipe);
 
               return (
                 <ProductChip
@@ -172,6 +171,7 @@ const Orders = () => {
                   product={product}
                   recipe={recipe}
                   refetchRecipes={refetchRecipes}
+                  refetchOrders={refetch}
                 />
               );
             })}

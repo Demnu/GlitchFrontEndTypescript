@@ -1,18 +1,18 @@
-import { Box, Chip, ClickAwayListener, Popper, Dialog } from "@mui/material";
+import { Box, Chip, Dialog } from "@mui/material";
 import { ProductExtendedJsonSchema, RecipeDto } from "../../../glitchHubApi";
 import { useState } from "react";
 import { RecipeCard } from "./RecipeCard";
 import { ProductCard } from "./ProductCard";
-import { NewRecipeForm } from "./NewRecipeForm";
+import { CreateRecipeCard } from "./CreateRecipeCard";
 
 interface ProductChipProps {
   product: ProductExtendedJsonSchema;
   recipe: RecipeDto | undefined;
   refetchRecipes: () => void;
+  refetchOrders: () => void;
 }
 const ProductChip = (props: ProductChipProps) => {
-  const { product, recipe } = props;
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { product, recipe, refetchRecipes, refetchOrders } = props;
   const [isCreatingRecipe, setIsCreatingRecipe] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const toggleDialog = () => {
@@ -24,6 +24,7 @@ const ProductChip = (props: ProductChipProps) => {
   };
   return (
     <>
+      {/* Handle chip */}
       <Box sx={{ ":hover": { cursor: "pointer" } }} onClick={toggleDialog}>
         <Chip
           variant={isDialogOpen ? "filled" : "outlined"}
@@ -39,7 +40,14 @@ const ProductChip = (props: ProductChipProps) => {
           sx={{ userSelect: "none" }}
         />
       </Box>
-      <Dialog open={isDialogOpen} onClose={toggleDialog}>
+
+      {/* Handle dialogues */}
+      <Dialog
+        open={isDialogOpen}
+        onClose={toggleDialog}
+        scroll="body"
+        sx={{ maxHeight: "50rem" }}
+      >
         {!!recipe && (
           <RecipeCard
             product={product}
@@ -56,7 +64,15 @@ const ProductChip = (props: ProductChipProps) => {
           />
         )}
         {isCreatingRecipe && (
-          <NewRecipeForm product={product} onSave={() => {}} />
+          <CreateRecipeCard
+            product={product}
+            onSave={() => {
+              toggleDialog();
+              setIsCreatingRecipe(false);
+              refetchRecipes();
+              refetchOrders();
+            }}
+          />
         )}
       </Dialog>
     </>
