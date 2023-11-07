@@ -1,13 +1,16 @@
-import { Box, Chip, ClickAwayListener, Paper, Popper } from "@mui/material";
-import { ProductExtendedJsonSchema } from "../../glitchHubApi";
+import { Box, Chip, ClickAwayListener, Popper } from "@mui/material";
+import { ProductExtendedJsonSchema, RecipeDto } from "../../../glitchHubApi";
 import { useState } from "react";
-import { grey } from "@mui/material/colors";
+import { RecipeCard } from "./RecipeCard";
+import { NewRecipeCard } from "./NewRecipeCard";
 
 interface ProductChipProps {
   product: ProductExtendedJsonSchema;
+  recipe: RecipeDto | undefined;
+  refetchRecipes: () => void;
 }
 const ProductChip = (props: ProductChipProps) => {
-  const { product } = props;
+  const { product, recipe } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const showPopper = (event: React.MouseEvent<HTMLElement>) => {
@@ -35,22 +38,21 @@ const ProductChip = (props: ProductChipProps) => {
         anchorEl={anchorEl}
         placement="bottom"
       >
-        <Paper
-          sx={{
-            borderRadius: "0.5rem",
-            border: 1.8,
-            p: 1,
-            borderColor: grey[500],
-            minWidth: "10rem",
-            minHeight: "10rem",
-            boxShadow: 2,
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box>{product.productName}</Box>
-            <Box>Recipe:</Box>
-          </Box>
-        </Paper>
+        {!!recipe && (
+          <RecipeCard
+            product={product}
+            recipe={recipe}
+            onEdit={() => {}}
+            onDelete={() => {}}
+          />
+        )}
+        {!recipe && (
+          <NewRecipeCard
+            product={product}
+            onCreate={() => {}}
+            onNotNeeded={() => {}}
+          />
+        )}
       </Popper>
       <ClickAwayListener
         onClickAway={() => {

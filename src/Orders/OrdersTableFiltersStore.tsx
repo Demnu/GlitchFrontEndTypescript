@@ -5,7 +5,7 @@ interface OrdersTableFilersStore {
 }
 
 const useOrdersTableFiltersStore = create<OrdersTableFilersStore>((set) => ({
-  hideCalculatedOrders: true,
+  hideCalculatedOrders: false,
   changeHideCalculatedOrders: () =>
     set((state) => ({ hideCalculatedOrders: !state.hideCalculatedOrders })),
 }));

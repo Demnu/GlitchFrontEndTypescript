@@ -13,10 +13,11 @@ import {
   OrderDto,
   MakeCalculationRequestDto,
 } from "../../glitchHubApi";
-import { ProductChip } from "./ProductChip";
+import { ProductChip } from "./ProductChip/ProductChip";
 import { OrdersTableFilters } from "./OrdersTableFilters";
 import { useOrdersTableFiltersStore } from "./OrdersTableFiltersStore";
 import { OrdersLegend } from "./OrdersLegend";
+import { formatOrderStatus } from "./OrdersUtils";
 const makeCalculation = async (selectedIds: string[]) => {
   const request: MakeCalculationRequestDto = { orderIds: selectedIds };
   return await api.calculations.makeCalculationCreate(request);
@@ -36,35 +37,46 @@ const Orders = () => {
     refetchInterval: 300000,
   });
 
+  const {
+    data: recipes,
+    isLoading: isLoadingRecipes,
+    refetch: refetchRecipes,
+  } = useQuery(["recipes"], api.recipes.listRecipesList, {
+    refetchOnWindowFocus: false,
+    refetchInterval: 300000,
+  });
+
   const handleSelection = (item: GridSelectionModel) => {
     setSelectedOrders(item);
   };
 
   useEffect(() => {
-    const ordersFormatted: OrderDtos = orders?.data
-      ? orders?.data.map((order) => {
-          const dateCreated = order.dateCreated;
-          let date: Date = new Date();
-          if (dateCreated) {
-            date = new Date(dateCreated);
-          }
-          return {
-            id: order.id,
-            customerName: order.customerName,
-            products: order.products ? order.products : [],
-            orderStatus: order.orderStatus,
-            dateCreated: date.toLocaleDateString(),
-          };
-        })
-      : [];
-    setFormattedOrders(ordersFormatted);
-    setFilteredOrders(ordersFormatted);
-  }, [orders?.data]);
+    if (!isLoading && !isLoadingRecipes) {
+      const ordersFormatted: OrderDtos = orders?.data
+        ? orders?.data.map((order) => {
+            const dateCreated = order.dateCreated;
+            let date: Date = new Date();
+            if (dateCreated) {
+              date = new Date(dateCreated);
+            }
+            return {
+              id: order.id,
+              customerName: order.customerName,
+              products: order.products ? order.products : [],
+              orderStatus: order.orderStatus,
+              dateCreated: date.toLocaleDateString(),
+              invoiceNumber: order.invoiceNumber,
+            };
+          })
+        : [];
+      setFormattedOrders(ordersFormatted);
+      setFilteredOrders(ordersFormatted);
+    }
+  }, [orders?.data, isLoadingRecipes, isLoading]);
 
   useEffect(() => {
     let ordersFiltered: OrderDtos = [];
     if (hideCalculatedOrders) {
-      console.log("here");
       ordersFiltered = formattedOrders.filter(
         (order) => order.orderStatus === "notCalculated"
       );
@@ -74,8 +86,10 @@ const Orders = () => {
     }
   }, [hideCalculatedOrders, formattedOrders]);
 
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "Order ID", width: 90 },
+  const columnsHide: GridColDef[] = [
+    { field: "id", headerName: "Order ID", width: 90, hideable: true },
+
+    { field: "invoiceNumber", headerName: "Invoice Number", width: 90 },
 
     {
       field: "customerName",
@@ -94,9 +108,73 @@ const Orders = () => {
       renderCell: (params: GridRenderCellParams<unknown, OrderDto>) => {
         return (
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {params.row.products.map((product) => (
-              <ProductChip product={product} />
-            ))}
+            {params.row.products.map((product, i) => {
+              // find corresponding recipe if not undefined
+              const recipe = recipes?.data.find((r) =>
+                r.recipeName.includes(product.productName)
+              );
+              console.log(recipe);
+
+              return (
+                <ProductChip
+                  key={i}
+                  product={product}
+                  recipe={recipe}
+                  refetchRecipes={refetchRecipes}
+                />
+              );
+            })}
+          </Box>
+        );
+      },
+    },
+  ];
+  const columnsShow: GridColDef[] = [
+    { field: "id", headerName: "Order ID", width: 90 },
+    { field: "invoiceNumber", headerName: "Invoice Number", width: 90 },
+
+    {
+      field: "orderStatus",
+      headerName: "Order Status",
+      width: 120,
+      valueGetter: (params) => {
+        return formatOrderStatus(params.row);
+      },
+    },
+
+    {
+      field: "customerName",
+      headerName: "Customer",
+      width: 150,
+    },
+    {
+      field: "dateCreated",
+      headerName: "Order Date",
+      width: 120,
+    },
+    {
+      field: "products",
+      headerName: "Products",
+      width: 8000,
+      renderCell: (params: GridRenderCellParams<unknown, OrderDto>) => {
+        return (
+          <Box sx={{ display: "flex", gap: "0.5rem" }}>
+            {params.row.products.map((product, i) => {
+              // find corresponding recipe if not undefined
+              const recipe = recipes?.data.find((r) =>
+                r.recipeName.includes(product.productName)
+              );
+              console.log(recipe);
+
+              return (
+                <ProductChip
+                  key={i}
+                  product={product}
+                  recipe={recipe}
+                  refetchRecipes={refetchRecipes}
+                />
+              );
+            })}
           </Box>
         );
       },
@@ -127,9 +205,16 @@ const Orders = () => {
         <OrdersLegend />
         <Box sx={{ flexGrow: 1 }}>
           <DataGrid
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
             loading={isLoading}
             rows={filteredOrders}
-            columns={columns}
+            columns={hideCalculatedOrders ? columnsHide : columnsShow}
             checkboxSelection
             disableSelectionOnClick
             density="compact"

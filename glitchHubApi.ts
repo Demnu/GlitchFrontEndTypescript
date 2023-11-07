@@ -12,6 +12,8 @@
 export type OrderDtos = {
   /** @example "123" */
   id: string;
+  /** @example "A1000" */
+  invoiceNumber: string;
   /** @example "08/09/1998" */
   dateCreated: string;
   /** @example "Harry" */
@@ -38,6 +40,8 @@ export type OrderDtos = {
 export interface OrderDto {
   /** @example "123" */
   id: string;
+  /** @example "A1000" */
+  invoiceNumber: string;
   /** @example "08/09/1998" */
   dateCreated: string;
   /** @example "Harry" */
@@ -66,27 +70,52 @@ export interface OrderDto {
   }[];
 }
 
+export interface RecipeDto {
+  /** @example 1234 */
+  id: number;
+  /** @example "Blurger" */
+  productId: string;
+  /** @example "Yummy Blend" */
+  recipeName: string;
+  recipe_beans: {
+    /** @example 1 */
+    id: number;
+    /** @example 2 */
+    beanId: number;
+    /** @example 3 */
+    recipeId: number;
+    /** @example 100 */
+    amountOrdered: number;
+    bean: {
+      /** @example 2 */
+      id: number;
+      /** @example "Roasty bean" */
+      beanName: string;
+    };
+  }[];
+}
+
 export type RecipeDtos = {
   /** @example 1234 */
-  id?: number;
+  id: number;
   /** @example "Blurger" */
-  productId?: string;
+  productId: string;
   /** @example "Yummy Blend" */
-  recipeName?: string;
-  recipe_beans?: {
+  recipeName: string;
+  recipe_beans: {
     /** @example 1 */
-    id?: number;
+    id: number;
     /** @example 2 */
-    beanId?: number;
+    beanId: number;
     /** @example 3 */
-    recipeId?: number;
+    recipeId: number;
     /** @example 100 */
-    amountOrdered?: number;
-    bean?: {
+    amountOrdered: number;
+    bean: {
       /** @example 2 */
-      id?: number;
+      id: number;
       /** @example "Roasty bean" */
-      beanName?: string;
+      beanName: string;
     };
   }[];
 }[];
@@ -393,7 +422,7 @@ export class Api<
      * @request GET:/recipes/listRecipes
      */
     listRecipesList: (params: RequestParams = {}) =>
-      this.request<OrderDtos, any>({
+      this.request<RecipeDtos, any>({
         path: `/recipes/listRecipes`,
         method: 'GET',
         ...params
@@ -432,6 +461,21 @@ export class Api<
         method: 'POST',
         body: body,
         type: ContentType.Json,
+        ...params
+      })
+  };
+  logs = {
+    /**
+     * No description
+     *
+     * @tags Logs
+     * @name LogsList
+     * @request GET:/logs/
+     */
+    logsList: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/logs/`,
+        method: 'GET',
         ...params
       })
   };
