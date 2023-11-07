@@ -21,7 +21,6 @@ const RecipeCard = (props: RecipeCardProps) => {
 
   // Function to format the total weight
   const formatTotalWeight = (total: number) => `${total.toFixed(2)}g`;
-
   return (
     <Card
       elevation={4}

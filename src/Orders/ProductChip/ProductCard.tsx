@@ -11,11 +11,11 @@ import { ProductExtendedJsonSchema } from "../../../glitchHubApi";
 
 interface NewRecipeCardProps {
   product: ProductExtendedJsonSchema;
-  onCreate: () => void; // Function to handle create recipe events
+  onCreate: (event: React.MouseEvent<HTMLButtonElement>) => void; // Function to handle create recipe events
   onNotNeeded: () => void; // Function to handle 'recipe not needed' events
 }
 
-const NewRecipeCard = (props: NewRecipeCardProps) => {
+const ProductCard = (props: NewRecipeCardProps) => {
   const { product, onCreate, onNotNeeded } = props;
 
   return (
@@ -74,4 +74,4 @@ const NewRecipeCard = (props: NewRecipeCardProps) => {
   );
 };
 
-export { NewRecipeCard };
+export { ProductCard };
