@@ -1,10 +1,53 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./DashboardLayout/DashboardLayout.tsx";
+import "./index.css";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { Orders } from "./Orders/Orders.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Box } from "@mui/material";
+import { Login } from "./Login.tsx";
+const DashboardLayout = () => {
+  return (
+    <App>
+      <Outlet />
+    </App>
+  );
+};
+const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const router = createBrowserRouter([
+  {
+    children: [
+      {
+        path: "/",
+        element: <Login />,
+      },
+      {
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: "/orders",
+            element: <Orders />,
+          },
+          {
+            path: "/calculations",
+            element: <Box>Calculations</Box>,
+          },
+
+          {
+            path: "/recipes",
+            element: <Box>Recipes</Box>,
+          },
+        ],
+      },
+    ],
+  },
+]);
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </React.StrictMode>
+);
