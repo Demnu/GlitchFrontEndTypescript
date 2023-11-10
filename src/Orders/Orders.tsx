@@ -91,7 +91,8 @@ const Orders = () => {
         const orderMatch =
           searchRegExp.test(order.customerName) ||
           searchRegExp.test(order.id) ||
-          searchRegExp.test(order.invoiceNumber);
+          searchRegExp.test(order.invoiceNumber) ||
+          searchRegExp.test(order.dateCreated);
 
         // Check if searchText is part of any product's productName or sku
         const productMatch = order.products.some(
@@ -186,7 +187,7 @@ const Orders = () => {
         disabled={selectedOrders.length <= 0}
         onClick={calculateOrdersOnClickHandler}
       >
-        {selectedOrders.length <= 0 ? "Select Orders" : "Calculate Orders"}
+        Calculate Orders
       </Button>
       <OrdersTableFilters />
 
