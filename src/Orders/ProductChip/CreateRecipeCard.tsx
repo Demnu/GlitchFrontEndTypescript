@@ -66,7 +66,6 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
     await api.recipes.createRecipeCreate(recipe);
     onSave();
   };
-
   const addBean = () => {
     setBeans([...beans, { beanName: "", beanAmount: 0 }]);
   };

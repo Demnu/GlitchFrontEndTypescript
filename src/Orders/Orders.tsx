@@ -18,24 +18,31 @@ import { OrdersTableFilters } from "./OrdersTableFilters";
 import { useOrdersTableFiltersStore } from "./OrdersTableFiltersStore";
 import { OrdersLegend } from "./OrdersLegend";
 import { formatOrderStatus } from "./OrdersUtils";
+import { MAX_INPUT_HEIGHT } from "../consts";
 const makeCalculation = async (selectedIds: string[]) => {
   const request: MakeCalculationRequestDto = { orderIds: selectedIds };
   return await api.calculations.makeCalculationCreate(request);
+};
+const fetchOrders = (dateFrom: string, dateTo: string) => {
+  console.log(dateFrom, dateTo);
+  return api.orders
+    .listOrdersCreate({ dateFrom, dateTo })
+    .then((response) => response.data);
 };
 
 const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState<GridSelectionModel>([]);
   const [formattedOrders, setFormattedOrders] = useState<OrderDtos>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderDtos>([]);
-  const { hideCalculatedOrders } = useOrdersTableFiltersStore();
+  const { hideCalculatedOrders, dateFrom, dateTo, searchText } =
+    useOrdersTableFiltersStore();
   const {
-    isLoading,
     data: orders,
+    isLoading,
     refetch,
-  } = useQuery(["orders"], api.orders.listOrdersList, {
-    refetchOnWindowFocus: false,
-    refetchInterval: 300000,
-  });
+  } = useQuery(["orders", dateFrom, dateTo], () =>
+    fetchOrders(dateFrom.toISOString(), dateTo.toISOString())
+  );
 
   const {
     data: recipes,
@@ -52,8 +59,8 @@ const Orders = () => {
 
   useEffect(() => {
     if (!isLoading && !isLoadingRecipes) {
-      const ordersFormatted: OrderDtos = orders?.data
-        ? orders?.data.map((order) => {
+      const ordersFormatted: OrderDtos = orders
+        ? orders.map((order) => {
             const dateCreated = order.dateCreated;
             let date: Date = new Date();
             if (dateCreated) {
@@ -72,64 +79,47 @@ const Orders = () => {
       setFormattedOrders(ordersFormatted);
       setFilteredOrders(ordersFormatted);
     }
-  }, [orders?.data, isLoadingRecipes, isLoading]);
-
+    // Add dateFrom and dateTo to the dependency array
+  }, [orders, isLoadingRecipes, isLoading, dateFrom, dateTo]);
   useEffect(() => {
-    let ordersFiltered: OrderDtos = [];
+    let ordersFiltered: OrderDtos = formattedOrders;
+
+    // Filter by searchText if it's provided
+    if (searchText) {
+      ordersFiltered = ordersFiltered.filter((order) => {
+        const searchRegExp = new RegExp(searchText, "i"); // 'i' for case-insensitive
+        const orderMatch =
+          searchRegExp.test(order.customerName) ||
+          searchRegExp.test(order.id) ||
+          searchRegExp.test(order.invoiceNumber);
+
+        // Check if searchText is part of any product's productName or sku
+        const productMatch = order.products.some(
+          (product) =>
+            searchRegExp.test(product.productName) ||
+            searchRegExp.test(product.sku)
+        );
+
+        return orderMatch || productMatch;
+      });
+    }
+
+    // Filter by hideCalculatedOrders if the toggle is on
     if (hideCalculatedOrders) {
-      ordersFiltered = formattedOrders.filter(
+      ordersFiltered = ordersFiltered.filter(
         (order) => order.orderStatus === "notCalculated"
       );
-      setFilteredOrders(ordersFiltered);
-    } else {
-      setFilteredOrders(formattedOrders);
     }
-  }, [hideCalculatedOrders, formattedOrders]);
 
-  const columnsHide: GridColDef[] = [
-    { field: "id", headerName: "Order ID", width: 90, hideable: true },
+    // Set the filtered orders, or reset back to the original if no filters are active
+    if (!searchText && !hideCalculatedOrders) {
+      setFilteredOrders(formattedOrders);
+    } else {
+      setFilteredOrders(ordersFiltered);
+    }
+  }, [hideCalculatedOrders, formattedOrders, searchText, orders]);
 
-    { field: "invoiceNumber", headerName: "Invoice Number", width: 90 },
-
-    {
-      field: "customerName",
-      headerName: "Customer",
-      width: 150,
-    },
-    {
-      field: "dateCreated",
-      headerName: "Order Date",
-      width: 120,
-    },
-    {
-      field: "products",
-      headerName: "Products",
-      width: 8000,
-      renderCell: (params: GridRenderCellParams<unknown, OrderDto>) => {
-        return (
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {params.row.products.map((product, i) => {
-              // find corresponding recipe if not undefined
-              const recipe = recipes?.data.find((r) =>
-                r?.recipeName?.includes(product.productName)
-              );
-
-              return (
-                <ProductChip
-                  key={i}
-                  product={product}
-                  recipe={recipe}
-                  refetchRecipes={refetchRecipes}
-                  refetchOrders={refetch}
-                />
-              );
-            })}
-          </Box>
-        );
-      },
-    },
-  ];
-  const columnsShow: GridColDef[] = [
+  const columnsDefs: GridColDef[] = [
     { field: "id", headerName: "Order ID", width: 90 },
     { field: "invoiceNumber", headerName: "Invoice Number", width: 90 },
 
@@ -189,19 +179,24 @@ const Orders = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Button
-          size="large"
-          variant={selectedOrders.length <= 0 ? "outlined" : "contained"}
-          disabled={selectedOrders.length <= 0}
-          onClick={calculateOrdersOnClickHandler}
-        >
-          {selectedOrders.length <= 0 ? "Select Orders" : "Calculate Orders"}
-        </Button>
-        <OrdersTableFilters />
-      </Box>
+      <Button
+        sx={{ maxHeight: MAX_INPUT_HEIGHT, maxWidth: "20rem" }}
+        size="large"
+        variant={selectedOrders.length <= 0 ? "outlined" : "contained"}
+        disabled={selectedOrders.length <= 0}
+        onClick={calculateOrdersOnClickHandler}
+      >
+        {selectedOrders.length <= 0 ? "Select Orders" : "Calculate Orders"}
+      </Button>
+      <OrdersTableFilters />
 
-      <Paper sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
+        }}
+      >
         <OrdersLegend />
         <Box sx={{ flexGrow: 1 }}>
           <DataGrid
@@ -214,7 +209,7 @@ const Orders = () => {
             }}
             loading={isLoading}
             rows={filteredOrders}
-            columns={hideCalculatedOrders ? columnsHide : columnsShow}
+            columns={columnsDefs}
             checkboxSelection
             disableSelectionOnClick
             density="compact"
