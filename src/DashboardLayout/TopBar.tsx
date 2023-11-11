@@ -60,7 +60,11 @@ const TopBar = () => {
           </Box>
         )}
       </Box>
-      <Typography variant="h5" sx={{ transition: openCloseTransition }}>
+      <Typography
+        color={grey[900]}
+        variant="h5"
+        sx={{ transition: openCloseTransition }}
+      >
         {topBarTitle}
       </Typography>
     </Paper>
