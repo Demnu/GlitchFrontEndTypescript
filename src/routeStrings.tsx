@@ -11,10 +11,16 @@ const CALCULATIONS_PAGE_INFO: RouteInfo = {
 const RECIPES_PAGE_INFO: RouteInfo = { path: "/recipes", title: "Recipes" };
 const LOGOUT_PAGE_INFO: RouteInfo = { path: "/", title: "Logout" };
 
+const UNSAVED_CALCULATION_PAGE_INFO: RouteInfo = {
+  path: "/unsavedCalculation",
+  title: "Calculation",
+};
+
 export {
   ORDERS_PAGE_INFO,
   CALCULATIONS_PAGE_INFO,
   RECIPES_PAGE_INFO,
   LOGOUT_PAGE_INFO,
+  UNSAVED_CALCULATION_PAGE_INFO,
 };
 export type { RouteInfo };

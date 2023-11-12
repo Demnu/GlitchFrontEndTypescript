@@ -19,6 +19,9 @@ import { useOrdersTableFiltersStore } from "./OrdersTableFiltersStore";
 import { OrdersLegend } from "./OrdersLegend";
 import { formatOrderStatus } from "./OrdersUtils";
 import { MAX_INPUT_HEIGHT } from "../consts";
+import { useCalculationStore } from "../Calculation/CalculationStore";
+import { useViewNavigate } from "../hooks/useViewNavigate";
+import { UNSAVED_CALCULATION_PAGE_INFO } from "../routeStrings";
 const makeCalculation = async (selectedIds: string[]) => {
   const request: MakeCalculationRequestDto = { orderIds: selectedIds };
   return await api.calculations.makeCalculationCreate(request);
@@ -35,6 +38,8 @@ const Orders = () => {
   const [formattedOrders, setFormattedOrders] = useState<OrderDtos>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderDtos>([]);
   const [isDataGridReady, setIsDateGridReady] = useState(false);
+  const { setCalculation } = useCalculationStore();
+  const viewNavigate = useViewNavigate();
   const { hideCalculatedOrders, dateFrom, dateTo, searchText } =
     useOrdersTableFiltersStore();
   const {
@@ -176,6 +181,10 @@ const Orders = () => {
 
   const calculateOrdersOnClickHandler = async () => {
     const calculationResult = await makeCalculation(selectedOrders as string[]);
+    setCalculation(calculationResult.data);
+    if (calculationResult != null) {
+      viewNavigate(UNSAVED_CALCULATION_PAGE_INFO);
+    }
     refetch();
     console.log(calculationResult.data);
   };
