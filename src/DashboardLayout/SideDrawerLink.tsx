@@ -32,6 +32,9 @@ const SideDrawerLink = (props: SideDrawLinkProps) => {
             gap: "1rem",
             bgcolor: isActive ? grey[700] : "-moz-initial",
             pl: "1.1rem",
+            "&:hover": {
+              bgcolor: isActive ? grey[700] : grey[800], // Only apply hover effect if not active
+            },
           }}
         >
           <Icon />
