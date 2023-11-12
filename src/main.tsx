@@ -7,6 +7,12 @@ import { Orders } from "./Orders/Orders.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Box } from "@mui/material";
 import { Login } from "./Login.tsx";
+import {
+  CALCULATIONS_PAGE_INFO,
+  LOGOUT_PAGE_INFO,
+  ORDERS_PAGE_INFO,
+  RECIPES_PAGE_INFO,
+} from "./routeStrings.tsx";
 const DashboardLayout = () => {
   return (
     <App>
@@ -20,23 +26,23 @@ const router = createBrowserRouter([
   {
     children: [
       {
-        path: "/",
+        path: LOGOUT_PAGE_INFO.path,
         element: <Login />,
       },
       {
         element: <DashboardLayout />,
         children: [
           {
-            path: "/orders",
+            path: ORDERS_PAGE_INFO.path,
             element: <Orders />,
           },
           {
-            path: "/calculations",
+            path: CALCULATIONS_PAGE_INFO.path,
             element: <Box>Calculations</Box>,
           },
 
           {
-            path: "/recipes",
+            path: RECIPES_PAGE_INFO.path,
             element: <Box>Recipes</Box>,
           },
         ],

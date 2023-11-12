@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useViewNavigate } from "./hooks/useViewNavigate";
+import { ORDERS_PAGE_INFO } from "./routeStrings";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,7 +11,7 @@ const Login = () => {
   const handleLogin = () => {
     console.log("Username:", username);
     console.log("Password:", password);
-    viewNavigate("/orders");
+    viewNavigate(ORDERS_PAGE_INFO);
   };
 
   return (

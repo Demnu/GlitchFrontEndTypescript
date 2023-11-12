@@ -16,7 +16,9 @@ const SideDrawerLink = (props: SideDrawLinkProps) => {
   return (
     <NavLink
       onClick={() => {
-        setTopBarTitle(title);
+        if (title != "Logout") {
+          setTopBarTitle(title);
+        }
       }}
       to={link}
       unstable_viewTransition
