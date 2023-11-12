@@ -24,6 +24,7 @@ const TopBar = () => {
     >
       <Box
         sx={{
+          minWidth: "4rem",
           width: currentDrawerWidth,
           height: topBarHeight,
           bgcolor: grey[900],

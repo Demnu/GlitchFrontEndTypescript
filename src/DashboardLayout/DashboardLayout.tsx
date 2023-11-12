@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 
 import { Box } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { grey } from "@mui/material/colors";
 import { TopBar } from "./TopBar";
 import { SideDrawer } from "./SideDrawer";
 import { VIEW_HEIGHT } from "./dashboardLayoutConstants";
+import { useDashboardLayoutStore } from "./DashboardLayoutStore";
 interface AppProps {
   children: ReactElement;
 }
@@ -14,7 +15,26 @@ interface AppProps {
 export default function App(props: AppProps) {
   const { children } = props;
   const queryClient = new QueryClient();
-  // Styles for the drawer
+  const { refreshOnScreenSizeChange, setDrawerState } =
+    useDashboardLayoutStore();
+  useEffect(() => {
+    const isMobileDevice = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobileDevice) {
+      setDrawerState("closed");
+    }
+    const handleResize = () => {
+      refreshOnScreenSizeChange();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Initial check and setup
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <>
