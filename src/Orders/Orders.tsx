@@ -34,6 +34,7 @@ const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState<GridSelectionModel>([]);
   const [formattedOrders, setFormattedOrders] = useState<OrderDtos>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderDtos>([]);
+  const [isDataGridReady, setIsDateGridReady] = useState(false);
   const { hideCalculatedOrders, dateFrom, dateTo, searchText } =
     useOrdersTableFiltersStore();
   const {
@@ -78,6 +79,7 @@ const Orders = () => {
         : [];
       setFormattedOrders(ordersFormatted);
       setFilteredOrders(ordersFormatted);
+      setIsDateGridReady(true);
     }
     // Add dateFrom and dateTo to the dependency array
   }, [orders, isLoadingRecipes, isLoading, dateFrom, dateTo]);
@@ -152,8 +154,8 @@ const Orders = () => {
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
             {params.row.products.map((product, i) => {
               // find corresponding recipe if not undefined
-              const recipe = recipes?.data.find((r) =>
-                r?.recipeName?.includes(product.productName)
+              const recipe = recipes?.data.find(
+                (r) => r?.recipeName === product.productName
               );
 
               return (
@@ -208,7 +210,7 @@ const Orders = () => {
                 },
               },
             }}
-            loading={isLoading}
+            loading={!isDataGridReady}
             rows={filteredOrders}
             columns={columnsDefs}
             checkboxSelection

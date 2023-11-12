@@ -22,6 +22,7 @@ const ProductChip = (props: ProductChipProps) => {
       setIsCreatingRecipe(false);
     }
   };
+
   return (
     <>
       {/* Handle chip */}

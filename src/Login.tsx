@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { useViewNavigate } from "./hooks/useViewNavigate";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const viewNavigate = useViewNavigate();
 
   const handleLogin = () => {
-    // In a real application, you would perform actual login logic here.
-    // For this example, let's just log the input values.
     console.log("Username:", username);
     console.log("Password:", password);
+    viewNavigate("/orders");
   };
 
   return (
