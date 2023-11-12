@@ -3,6 +3,7 @@ import { useDashboardLayoutStore } from "./DashboardLayoutStore";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { SvgIconComponent } from "@mui/icons-material";
+import { isMobile } from "../utils/isMobile";
 
 interface SideDrawLinkProps {
   link: string;
@@ -10,12 +11,16 @@ interface SideDrawLinkProps {
   title: string;
 }
 const SideDrawerLink = (props: SideDrawLinkProps) => {
-  const { drawerState, setTopBarTitle } = useDashboardLayoutStore();
+  const { drawerState, setDrawerState, setTopBarTitle } =
+    useDashboardLayoutStore();
 
   const { link, title, Icon } = props;
   return (
     <NavLink
       onClick={() => {
+        if (isMobile()) {
+          setDrawerState("closed");
+        }
         if (title != "Logout") {
           setTopBarTitle(title);
         }

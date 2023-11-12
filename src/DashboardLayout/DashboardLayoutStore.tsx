@@ -3,6 +3,7 @@ import {
   extendedDrawerWidth,
   closedDrawerWidth,
 } from "./dashboardLayoutConstants";
+import { isMobile } from "../utils/isMobile";
 
 interface DashboardLayoutStore {
   drawerState: "open" | "closed";
@@ -21,7 +22,7 @@ const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) => ({
     set({ topBarTitle: value });
   },
   setDrawerState: (value) => {
-    const isMobileDevice = window.matchMedia("(max-width: 768px)").matches;
+    const isMobileDevice = isMobile();
     const newClosedDrawerWidth = isMobileDevice ? "0px" : closedDrawerWidth;
     console.log(value);
 
@@ -33,7 +34,7 @@ const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) => ({
   },
   refreshOnScreenSizeChange: () => {
     const { drawerState } = get();
-    const isMobileDevice = window.matchMedia("(max-width: 768px)").matches;
+    const isMobileDevice = isMobile();
     const newClosedDrawerWidth = isMobileDevice ? "0px" : closedDrawerWidth;
     set({
       drawerState: drawerState,

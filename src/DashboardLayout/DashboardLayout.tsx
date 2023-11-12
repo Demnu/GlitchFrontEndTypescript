@@ -8,6 +8,7 @@ import { TopBar } from "./TopBar";
 import { SideDrawer } from "./SideDrawer";
 import { VIEW_HEIGHT } from "./dashboardLayoutConstants";
 import { useDashboardLayoutStore } from "./DashboardLayoutStore";
+import { isMobile } from "../utils/isMobile";
 interface AppProps {
   children: ReactElement;
 }
@@ -18,7 +19,7 @@ export default function App(props: AppProps) {
   const { refreshOnScreenSizeChange, setDrawerState } =
     useDashboardLayoutStore();
   useEffect(() => {
-    const isMobileDevice = window.matchMedia("(max-width: 768px)").matches;
+    const isMobileDevice = isMobile();
     if (isMobileDevice) {
       setDrawerState("closed");
     }
