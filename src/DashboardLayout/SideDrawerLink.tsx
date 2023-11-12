@@ -28,7 +28,7 @@ const SideDrawerLink = (props: SideDrawLinkProps) => {
             display: "flex",
             alignItems: "center",
             color: "white",
-            fontSize: "20px",
+            fontSize: "19px",
             gap: "1rem",
             bgcolor: isActive ? grey[700] : "-moz-initial",
             pl: "1.1rem",
