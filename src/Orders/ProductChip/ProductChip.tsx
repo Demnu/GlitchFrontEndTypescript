@@ -1,9 +1,14 @@
 import { Box, Chip, Dialog } from "@mui/material";
-import { ProductExtendedJsonSchema, RecipeDto } from "../../../glitchHubApi";
+import {
+  MarkAsNotRecipeRequestDto,
+  ProductExtendedJsonSchema,
+  RecipeDto,
+} from "../../../glitchHubApi";
 import { useState } from "react";
 import { RecipeCard } from "./RecipeCard";
 import { ProductCard } from "./ProductCard";
 import { CreateRecipeCard } from "./CreateRecipeCard";
+import { api } from "../../myApi";
 
 interface ProductChipProps {
   product: ProductExtendedJsonSchema;
@@ -11,6 +16,14 @@ interface ProductChipProps {
   refetchRecipes: () => void;
   refetchOrders: () => void;
 }
+
+const markProductAsNotRecipe = async (productName: string) => {
+  const request: MarkAsNotRecipeRequestDto = {
+    productName: productName,
+  };
+  return await api.recipes.markProductAsNotRecipeCreate(request);
+};
+
 const ProductChip = (props: ProductChipProps) => {
   const { product, recipe, refetchRecipes, refetchOrders } = props;
   const [isCreatingRecipe, setIsCreatingRecipe] = useState(false);
@@ -61,7 +74,12 @@ const ProductChip = (props: ProductChipProps) => {
           <ProductCard
             product={product}
             onCreate={() => setIsCreatingRecipe(true)}
-            onNotNeeded={() => {}}
+            onNotNeeded={async () => {
+              await markProductAsNotRecipe(product.productName);
+              setIsDialogOpen(false);
+              refetchOrders();
+              refetchRecipes();
+            }}
           />
         )}
         {isCreatingRecipe && (
