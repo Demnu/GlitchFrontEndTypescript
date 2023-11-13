@@ -1,6 +1,6 @@
 import { Box, Chip } from "@mui/material";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
-import { MakeCalculationResponseDto } from "../../glitchHubApi";
+import { Calculation } from "../../glitchHubApi";
 
 interface ProductsTally {
   id: string;
@@ -73,7 +73,7 @@ const beansTallyColumns = [
 ];
 
 interface CalculationsTableProps {
-  calculation: MakeCalculationResponseDto | null;
+  calculation: Calculation | null;
 }
 const CalculationTables = (props: CalculationsTableProps) => {
   const { calculation } = props;

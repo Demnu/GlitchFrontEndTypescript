@@ -4,17 +4,14 @@ import { useEffect, useState } from "react";
 import { useViewNavigate } from "../hooks/useViewNavigate";
 import { ORDERS_PAGE_INFO } from "../routeStrings";
 import { CalculationTables } from "./CalculationTables";
-import {
-  MakeCalculationResponseDto,
-  SaveCalculationRequestDto,
-} from "../../glitchHubApi";
+import { Calculation, SaveCalculationRequestDto } from "../../glitchHubApi";
 import { api } from "../myApi";
 import { MAX_INPUT_HEIGHT } from "../consts";
 
 const saveCalculation = async (
   author: string,
   calculationTitle: string,
-  calculation: MakeCalculationResponseDto
+  calculation: Calculation
 ) => {
   const request: SaveCalculationRequestDto = {
     author: author,

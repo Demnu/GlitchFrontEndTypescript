@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { MakeCalculationResponseDto } from "../../glitchHubApi";
+import { Calculation } from "../../glitchHubApi";
 
 interface CalculationStore {
-  calculation: MakeCalculationResponseDto | null;
-  setCalculation: (calculation: MakeCalculationResponseDto) => void;
+  calculation: Calculation | null;
+  setCalculation: (calculation: Calculation) => void;
 }
 
 const useCalculationStore = create<CalculationStore>((set) => ({
