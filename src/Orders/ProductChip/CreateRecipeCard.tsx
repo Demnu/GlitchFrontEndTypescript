@@ -62,7 +62,6 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
       newBeans: newBeans,
     };
 
-    console.log(recipe);
     await api.recipes.createRecipeCreate(recipe);
     onSave();
   };

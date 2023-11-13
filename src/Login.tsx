@@ -9,8 +9,6 @@ const Login = () => {
   const viewNavigate = useViewNavigate();
 
   const handleLogin = () => {
-    console.log("Username:", username);
-    console.log("Password:", password);
     viewNavigate(ORDERS_PAGE_INFO);
   };
 

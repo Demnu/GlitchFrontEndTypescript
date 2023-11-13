@@ -1,102 +1,102 @@
-import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import { Box, Button, Paper, TextField } from "@mui/material";
 import { useCalculationStore } from "./CalculationStore";
+import { useEffect, useState } from "react";
+import { useViewNavigate } from "../hooks/useViewNavigate";
+import { ORDERS_PAGE_INFO } from "../routeStrings";
+import { CalculationTables } from "./CalculationTables";
+import {
+  MakeCalculationResponseDto,
+  SaveCalculationRequestDto,
+} from "../../glitchHubApi";
+import { api } from "../myApi";
+import { MAX_INPUT_HEIGHT } from "../consts";
 
-const ordersColumns = [
-  { field: "id", headerName: "Order ID's", width: 50, flex: 1 },
-  { field: "invoiceNumber", headerName: "Invoice", width: 100, flex: 1 },
-  { field: "customerName", headerName: "Customer", width: 50, flex: 1 },
-];
-const productTallyColumns = [
-  { field: "id", headerName: "id", width: 300 },
-  { field: "productName", headerName: "Product", width: 300 },
-  { field: "hasRecipe", headerName: "Has Recipe", width: 100 },
-  { field: "amountOrdered", headerName: "Amount", width: 150 },
-];
+const saveCalculation = async (
+  author: string,
+  calculationTitle: string,
+  calculation: MakeCalculationResponseDto
+) => {
+  const request: SaveCalculationRequestDto = {
+    author: author,
+    calculationName: calculationTitle,
+    ordersCalculatedInformation: calculation.ordersCalculatedInformation,
+    beansTally: calculation.beansTally,
+    productsTally: calculation.productsTally,
+  };
+  return await api.calculations.saveCalculationCreate(request);
+};
 
-const beansTallyColumns = [
-  { field: "id", headerName: "id", width: 200 },
-  { field: "beanName", headerName: "Bean", width: 200 },
-  {
-    field: "amountNeededToBeRoasted",
-    headerName: "Amount (kg)",
-    width: 150,
-    renderCell: (
-      params: GridRenderCellParams<
-        unknown,
-        {
-          id: number;
-          beanName?: string | undefined;
-          amountNeededToBeRoasted?: number | undefined;
-        }
-      >
-    ) => {
-      console.log(params.row);
-      return (
-        <>
-          {params.row.amountNeededToBeRoasted &&
-            params.row.amountNeededToBeRoasted / 100}
-          g
-        </>
-      );
-    },
-  },
-];
 const UnsavedCalculation = () => {
   const { calculation } = useCalculationStore();
+  const viewNavigate = useViewNavigate();
+  const [author, setAuthor] = useState("");
+  const [calculationTitle, setCalculationTitle] = useState("");
+
+  useEffect(() => {
+    if (!calculation) {
+      viewNavigate(ORDERS_PAGE_INFO);
+    } else {
+      console.log(calculation);
+    }
+  }, [calculation, viewNavigate]);
+
+  const handleSave = async () => {
+    if (calculation) {
+      await saveCalculation(author, calculationTitle, calculation);
+      // Implement post-save logic (like redirecting or showing a message)
+    }
+  };
+
   return (
     <Box
       sx={{
         flexGrow: "1",
         display: "flex",
         gap: "1rem",
-        justifyContent: "space-",
+        flexDirection: "column",
       }}
     >
-      <DataGrid
-        sx={{ width: "20rem" }}
-        initialState={{
-          columns: {
-            columnVisibilityModel: {
-              id: false,
-            },
-          },
-        }}
-        rows={calculation ? calculation?.ordersCalculatedInformation : []}
-        columns={ordersColumns}
-        checkboxSelection
-        disableSelectionOnClick
-        density="compact"
-      />
-      <DataGrid
-        initialState={{
-          columns: {
-            columnVisibilityModel: {
-              id: false,
-            },
-          },
-        }}
-        rows={calculation ? calculation.beansTally : []}
-        columns={beansTallyColumns}
-        checkboxSelection
-        disableSelectionOnClick
-        density="compact"
-      />
-      <DataGrid
-        initialState={{
-          columns: {
-            columnVisibilityModel: {
-              id: false,
-            },
-          },
-        }}
-        rows={calculation ? calculation.productsTally : []}
-        columns={productTallyColumns}
-        checkboxSelection
-        disableSelectionOnClick
-        density="compact"
-      />
+      <Paper
+        component="form"
+        sx={{ py: "1rem", px: "0.5rem", display: "flex", gap: "1rem" }}
+        noValidate
+      >
+        <TextField
+          sx={{ height: MAX_INPUT_HEIGHT }}
+          autoComplete="on"
+          size="small"
+          required
+          id="author"
+          label="Author"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+        />
+        <TextField
+          autoComplete="off"
+          sx={{ height: MAX_INPUT_HEIGHT }}
+          size="small"
+          required
+          id="calculation-title"
+          label="Calculation Title"
+          value={calculationTitle}
+          onChange={(e) => setCalculationTitle(e.target.value)}
+        />
+        <Button
+          type="submit"
+          disabled={!author || !calculationTitle || !calculation}
+          variant={
+            !author || !calculationTitle || !calculation
+              ? "outlined"
+              : "contained"
+          }
+          onClick={handleSave}
+        >
+          Save Calculation
+        </Button>
+      </Paper>
+      <CalculationTables calculation={calculation} />
     </Box>
   );
 };
+
 export { UnsavedCalculation };

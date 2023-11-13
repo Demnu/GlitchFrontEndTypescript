@@ -27,7 +27,6 @@ const makeCalculation = async (selectedIds: string[]) => {
   return await api.calculations.makeCalculationCreate(request);
 };
 const fetchOrders = (dateFrom: string, dateTo: string) => {
-  console.log(dateFrom, dateTo);
   return api.orders
     .listOrdersCreate({ dateFrom, dateTo })
     .then((response) => response.data);
@@ -186,7 +185,6 @@ const Orders = () => {
       viewNavigate(UNSAVED_CALCULATION_PAGE_INFO);
     }
     refetch();
-    console.log(calculationResult.data);
   };
 
   return (
@@ -229,16 +227,6 @@ const Orders = () => {
           />
         </Box>
       </Paper>
-      {/* <div
-        className={`${!showRoastingList && " hidden"} flex h-screen flex-col`}
-      >
-        {showRoastingList && (
-          <RoastingList
-            selectedOrders={selectedOrders}
-            setShowRoastingList={setShowRoastingList}
-          />
-        )}
-      </div> */}
     </>
   );
 };

@@ -24,7 +24,6 @@ const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) => ({
   setDrawerState: (value) => {
     const isMobileDevice = isMobile();
     const newClosedDrawerWidth = isMobileDevice ? "0px" : closedDrawerWidth;
-    console.log(value);
 
     set({
       drawerState: value,
