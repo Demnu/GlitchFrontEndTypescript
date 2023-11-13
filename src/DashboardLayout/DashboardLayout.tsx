@@ -1,7 +1,6 @@
 import { ReactElement, useEffect } from "react";
 
 import { Box } from "@mui/material";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { grey } from "@mui/material/colors";
 import { TopBar } from "./TopBar";
@@ -15,7 +14,6 @@ interface AppProps {
 
 export default function App(props: AppProps) {
   const { children } = props;
-  const queryClient = new QueryClient();
   const { refreshOnScreenSizeChange, setDrawerState } =
     useDashboardLayoutStore();
   useEffect(() => {
@@ -39,27 +37,25 @@ export default function App(props: AppProps) {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <TopBar />
-        <Box sx={{ display: "flex", bgcolor: grey[900] }}>
-          {/* handle drawer */}
-          <SideDrawer />
-          <Box
-            sx={{
-              bgcolor: grey[200],
-              display: "flex",
-              flexDirection: "column",
-              padding: "1rem",
-              flexGrow: "1",
-              gap: "1rem",
-              height: VIEW_HEIGHT, // Subtracting 64px from 100vh
-            }}
-          >
-            {children}
-          </Box>
+      <TopBar />
+      <Box sx={{ display: "flex", bgcolor: grey[900] }}>
+        {/* handle drawer */}
+        <SideDrawer />
+        <Box
+          sx={{
+            bgcolor: grey[200],
+            display: "flex",
+            flexDirection: "column",
+            padding: "1rem",
+            flexGrow: "1",
+            gap: "1rem",
+            height: VIEW_HEIGHT, // Subtracting 64px from 100vh
+          }}
+        >
+          {children}
         </Box>
-        <ReactQueryDevtools initialIsOpen={false} position="bottom-left" />
-      </QueryClientProvider>
+      </Box>
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-left" />
     </>
   );
 }
