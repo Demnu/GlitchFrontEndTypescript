@@ -48,8 +48,6 @@ const Orders = () => {
   const [formattedOrders, setFormattedOrders] = useState<OrderDtos>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderDtos>([]);
   const [isDataGridReady, setIsDateGridReady] = useState(false);
-  const [showWarningDialog, setShowWarningDialog] = useState(false);
-  const [productsCausingWarning, setProductsCausingWarning] = useState([]);
 
   const { setCalculation } = useCalculationStore();
   const viewNavigate = useViewNavigate();
@@ -101,6 +99,8 @@ const Orders = () => {
     }
     // Add dateFrom and dateTo to the dependency array
   }, [orders, isLoadingRecipes, isLoading, dateFrom, dateTo]);
+
+  // handles the orders shown dependant on the search and hideCalculated filters
   useEffect(() => {
     let ordersFiltered: OrderDtos = formattedOrders;
 
@@ -193,33 +193,6 @@ const Orders = () => {
   ];
 
   const calculateOrdersOnClickHandler = async () => {
-    const ordersSelected = formattedOrders.filter((o) =>
-      selectedOrders.includes(o.id)
-    );
-
-    let productsWithMissingRecipes = [];
-    ordersSelected.forEach((order) => {
-      order.products.forEach((product) => {
-        if (product.possiblyCoffee && !product.hasRecipe) {
-          // Ensure that the product is not already added
-          if (!productsWithMissingRecipes.some((p) => p.sku === product.sku)) {
-            productsWithMissingRecipes.push(product);
-          }
-        }
-      });
-    });
-
-    if (productsWithMissingRecipes.length > 0) {
-      setProductsCausingWarning(productsWithMissingRecipes);
-      setShowWarningDialog(true);
-    } else {
-      await calculateAndNavigate();
-    }
-  };
-
-  // This function will be called when the user confirms the warning
-  const handleConfirmWarning = async () => {
-    setShowWarningDialog(false);
     await calculateAndNavigate();
   };
 
@@ -234,36 +207,6 @@ const Orders = () => {
 
   return (
     <>
-      <Dialog
-        open={showWarningDialog}
-        onClose={() => setShowWarningDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Missing Recipe Warning"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            The following products possibly need recipes but don't have them:
-            <ul>
-              {productsCausingWarning.map((product, index) => (
-                <li key={index}>
-                  {product.productName} (ID: {product.sku})
-                </li>
-              ))}
-            </ul>
-            Do you want to continue?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowWarningDialog(false)}>Cancel</Button>
-          <Button onClick={handleConfirmWarning} autoFocus>
-            Continue
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <Button
         sx={{ maxHeight: MAX_INPUT_HEIGHT, maxWidth: "20rem" }}
         size="large"
