@@ -16,6 +16,7 @@ import {
 } from "./routeStrings.tsx";
 import { UnsavedCalculationPage } from "./Calculation/UnsavedCalculation.tsx";
 import { CalculationsList } from "./Calculation/CalculationsList.tsx";
+import { Recipes } from "./recipes/Recipes.tsx";
 const DashboardLayout = () => {
   return (
     <App>
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
 
           {
             path: RECIPES_PAGE_INFO.path,
-            element: <Box>Recipes</Box>,
+            element: <Recipes />,
           },
           {
             path: UNSAVED_CALCULATION_PAGE_INFO.path,
