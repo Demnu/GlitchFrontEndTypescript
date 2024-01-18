@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../myApi";
 import { ProductChip } from "../Orders/ProductChip/ProductChip";
 import { RecipesFilters } from "./RecipesFilters";
+import { useEffect, useState } from "react";
+import { useRecipesFiltersStore } from "./RecipesFiltersStore";
 
 const columnsDefs: GridColDef[] = [
   { field: "id", headerName: "Product Id", width: 90 },
@@ -30,14 +32,43 @@ const columnsDefs: GridColDef[] = [
 ];
 [];
 const Recipes = () => {
+  const { searchText } = useRecipesFiltersStore();
+  const [recipes, setRecipes] = useState<RecipeDtos>([]);
   const {
-    data: recipes,
+    data: fetchedRecipes,
     isLoading: isLoadingRecipes,
     refetch: refetchRecipes,
   } = useQuery(["recipes"], api.recipes.listRecipesList, {
     refetchOnWindowFocus: false,
     refetchInterval: 300000,
   });
+
+  useEffect(() => {
+    if (!isLoadingRecipes) {
+      setRecipes(fetchedRecipes?.data ?? []);
+    }
+  }, [fetchedRecipes]);
+
+  useEffect(() => {
+    if (searchText.length > 0 && !!fetchedRecipes?.data) {
+      let filteredRecipes = fetchedRecipes?.data;
+      filteredRecipes = filteredRecipes.filter((recipe) => {
+        const searchRegExp = new RegExp(searchText, "i"); // 'i' for case-insensitive
+
+        // filter using recipe name
+        const recipeMatch = searchRegExp.test(recipe.recipeName);
+
+        // filter using beans
+        const beanMatch = recipe.recipe_beans.some((rb) =>
+          searchRegExp.test(rb.bean.beanName)
+        );
+        return recipeMatch || beanMatch;
+      });
+      setRecipes(filteredRecipes);
+    } else {
+      setRecipes(fetchedRecipes?.data ?? []);
+    }
+  }, [searchText, isLoadingRecipes]);
 
   return (
     <Box
@@ -61,7 +92,7 @@ const Recipes = () => {
             },
           }}
           loading={isLoadingRecipes}
-          rows={recipes?.data ?? []}
+          rows={recipes}
           columns={columnsDefs}
           density="compact"
         />

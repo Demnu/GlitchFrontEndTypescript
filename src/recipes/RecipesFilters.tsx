@@ -26,6 +26,7 @@ const RecipesFilters = () => {
           InputProps={{
             endAdornment: <SearchIcon />,
           }}
+          autoComplete={"false"}
         />
       </Box>
     </Paper>
