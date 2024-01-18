@@ -1,4 +1,10 @@
+import { Box } from "@mui/material";
+
 const RecipesLegend = () => {
-  return <>Recipes Filters</>;
+  return (
+    <>
+      <Box>Legend</Box>
+    </>
+  );
 };
 export { RecipesLegend };

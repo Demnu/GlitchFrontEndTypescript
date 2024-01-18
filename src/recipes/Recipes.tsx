@@ -5,39 +5,31 @@ import { OrderDto, RecipeDto, RecipeDtos } from "../../glitchHubApi";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../myApi";
 import { ProductChip } from "../Orders/ProductChip/ProductChip";
+import { RecipesFilters } from "./RecipesFilters";
 
-const test = [{ id: "hi", invoiceNumber: "ABCDFG" }];
-interface Bean {
-  id: string;
-  beanName: string;
-}
-interface Recipe_Beans {
-  id: string;
-  amountOrdered: number;
-  bean: Bean;
-}
+const columnsDefs: GridColDef[] = [
+  { field: "id", headerName: "Product Id", width: 90 },
+  { field: "recipeName", headerName: "Recipe Name", flex: 1 },
+  {
+    field: "recipe_beans",
+    headerName: "Beans",
+    flex: 1,
+    renderCell: (params: GridRenderCellParams<unknown, RecipeDto>) => {
+      return (
+        <Box sx={{ display: "flex", gap: "0.5rem" }}>
+          {params.row.recipe_beans.map((rb, i) => (
+            <Chip
+              key={i}
+              label={rb.bean.beanName + " - " + rb.amountOrdered + "g"}
+            />
+          ))}
+        </Box>
+      );
+    },
+  },
+];
 [];
 const Recipes = () => {
-  const columnsDefs: GridColDef[] = [
-    { field: "id", headerName: "Product Id", width: 90 },
-    { field: "recipeName", headerName: "Recipe Name", flex: 1 },
-    {
-      field: "recipe_beans",
-      flex: 1,
-      renderCell: (params: GridRenderCellParams<unknown, RecipeDto>) => {
-        return (
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {params.row.recipe_beans.map((rb, i) => (
-              <Chip
-                key={i}
-                label={rb.bean.beanName + " - " + rb.amountOrdered + "g"}
-              />
-            ))}
-          </Box>
-        );
-      },
-    },
-  ];
   const {
     data: recipes,
     isLoading: isLoadingRecipes,
@@ -48,15 +40,18 @@ const Recipes = () => {
   });
 
   return (
-    <Paper
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column",
         flexGrow: 1,
       }}
     >
-      <RecipesLegend />
-      <Box sx={{ flexGrow: 1 }}>
+      <Box>
+        <RecipesFilters />
+        <RecipesLegend />
+      </Box>
+      <Paper sx={{ flexGrow: 1 }}>
         <DataGrid
           initialState={{
             columns: {
@@ -70,8 +65,8 @@ const Recipes = () => {
           columns={columnsDefs}
           density="compact"
         />
-      </Box>
-    </Paper>
+      </Paper>
+    </Box>
   );
 };
 export { Recipes };
