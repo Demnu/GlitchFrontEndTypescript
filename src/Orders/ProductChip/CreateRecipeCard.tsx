@@ -20,11 +20,6 @@ interface CreateRecipeCardProps {
   onSave: () => void;
 }
 
-interface ExistingBeanType {
-  beanId: number;
-  beanAmount: number;
-}
-
 const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
   const [beans, setBeans] = useState([{ beanName: "", beanAmount: 0 }]);
 
@@ -32,7 +27,7 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
     data: beansData,
     isLoading,
     refetch,
-  } = useQuery(["recipes"], api.beans.listBeansList, {
+  } = useQuery(["beans"], api.beans.listBeansList, {
     refetchOnWindowFocus: false,
     refetchInterval: 300000,
   });
@@ -40,26 +35,10 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
   const handleSave = async () => {
     // get beans that already are saved
     const newBeans = [...beans];
-    const existingBeans: ExistingBeanType[] = [];
-    beans.forEach((bean, i) => {
-      const foundBean = beansData?.data.find((b) =>
-        b.beanName.includes(bean.beanName)
-      );
-      if (foundBean) {
-        const existingBean: ExistingBeanType = {
-          beanId: foundBean.id,
-          beanAmount: bean.beanAmount,
-        };
-        existingBeans.push(existingBean);
-        newBeans.splice(i, 1);
-      }
-    });
-
     const recipe: RecipeRequestDto = {
       productId: product.id,
       recipeName: product.productName,
-      existingBeans: existingBeans,
-      newBeans: newBeans,
+      beans: newBeans,
     };
 
     await api.recipes.createRecipeCreate(recipe);
