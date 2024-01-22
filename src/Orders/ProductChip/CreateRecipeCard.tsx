@@ -22,7 +22,7 @@ interface CreateRecipeCardProps {
 
 const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
   const [beans, setBeans] = useState([{ beanName: "", beanAmount: 0 }]);
-
+  const [errorMsg, setErrorMsg] = useState<String | null>(null);
   const {
     data: beansData,
     isLoading,
@@ -33,16 +33,26 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
   });
 
   const handleSave = async () => {
-    // get beans that already are saved
-    const newBeans = [...beans];
-    const recipe: RecipeRequestDto = {
-      productId: product.id,
-      recipeName: product.productName,
-      beans: newBeans,
-    };
+    // check if there are bean amounts with 0 or less grams
+    const hasError = beans.some((b) => b.beanAmount <= 0);
+    if (!hasError) {
+      // get beans that already are saved
+      let newBeans = [...beans];
+      newBeans.forEach((bean) => {
+        bean.beanName = bean.beanName.trim();
+      });
 
-    await api.recipes.createRecipeCreate(recipe);
-    onSave();
+      const recipe: RecipeRequestDto = {
+        productId: product.id,
+        recipeName: product.productName,
+        beans: newBeans,
+      };
+
+      await api.recipes.createRecipeCreate(recipe);
+      onSave();
+    } else {
+      setErrorMsg("There is a bean with an invalid amount");
+    }
   };
   const addBean = () => {
     setBeans([...beans, { beanName: "", beanAmount: 0 }]);
@@ -92,7 +102,10 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
               variant="outlined"
               type="text"
               value={bean.beanName}
-              onChange={(e) => updateBeanName(index, e.target.value)}
+              onChange={(e) => {
+                setErrorMsg(null);
+                updateBeanName(index, e.target.value);
+              }}
               sx={{ flexGrow: 1 }}
             />
             <TextField
@@ -101,9 +114,10 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
               variant="outlined"
               type="number"
               value={bean.beanAmount}
-              onChange={(e) =>
-                updateBeanAmount(index, parseInt(e.target.value))
-              }
+              onChange={(e) => {
+                updateBeanAmount(index, parseInt(e.target.value));
+                setErrorMsg(null);
+              }}
               sx={{ flexGrow: 1 }}
             />
             <div
@@ -124,6 +138,7 @@ const CreateRecipeCard = ({ product, onSave }: CreateRecipeCardProps) => {
         >
           Add Bean
         </Button>
+        {!!errorMsg && <Box sx={{ color: "red" }}>{errorMsg}</Box>}
       </CardContent>
       <Divider sx={{ my: "1rem" }} />
       <Box
