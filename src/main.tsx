@@ -9,6 +9,7 @@ import { Box } from "@mui/material";
 import { Login } from "./Login.tsx";
 import {
   CALCULATIONS_PAGE_INFO,
+  CREATE_RECIPE_PAGE_INFO,
   LOGOUT_PAGE_INFO,
   ORDERS_PAGE_INFO,
   RECIPES_PAGE_INFO,
@@ -17,6 +18,7 @@ import {
 import { UnsavedCalculationPage } from "./Calculation/UnsavedCalculation.tsx";
 import { CalculationsList } from "./Calculation/CalculationsList.tsx";
 import { Recipes } from "./recipes/Recipes.tsx";
+import { CreateRecipePage } from "./recipes/CreateRecipePage.tsx";
 const DashboardLayout = () => {
   return (
     <App>
@@ -44,10 +46,13 @@ const router = createBrowserRouter([
             path: CALCULATIONS_PAGE_INFO.path,
             element: <CalculationsList />,
           },
-
           {
             path: RECIPES_PAGE_INFO.path,
             element: <Recipes />,
+          },
+          {
+            path: CREATE_RECIPE_PAGE_INFO.path,
+            element: <CreateRecipePage />,
           },
           {
             path: UNSAVED_CALCULATION_PAGE_INFO.path,

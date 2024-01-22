@@ -1,4 +1,4 @@
-import { Box, Chip, Paper } from "@mui/material";
+import { Box, Button, Chip, Dialog, Paper } from "@mui/material";
 import { RecipesLegend } from "./RecipesLegend";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { OrderDto, RecipeDto, RecipeDtos } from "../../glitchHubApi";
@@ -8,6 +8,9 @@ import { ProductChip } from "../Orders/ProductChip/ProductChip";
 import { RecipesFilters } from "./RecipesFilters";
 import { useEffect, useState } from "react";
 import { useRecipesFiltersStore } from "./RecipesFiltersStore";
+import { MAX_INPUT_HEIGHT } from "../consts";
+import { CREATE_RECIPE_PAGE_INFO } from "../routeStrings";
+import { useViewNavigate } from "../hooks/useViewNavigate";
 
 const columnsDefs: GridColDef[] = [
   { field: "id", headerName: "Product Id", width: 90 },
@@ -32,8 +35,12 @@ const columnsDefs: GridColDef[] = [
 ];
 [];
 const Recipes = () => {
+  const [openCreateRecipeDialog, setOpenCreateRecipeDialog] =
+    useState<boolean>(false);
   const { searchText } = useRecipesFiltersStore();
   const [recipes, setRecipes] = useState<RecipeDtos>([]);
+  const viewNavigate = useViewNavigate();
+
   const {
     data: fetchedRecipes,
     isLoading: isLoadingRecipes,
@@ -71,33 +78,45 @@ const Recipes = () => {
   }, [searchText, isLoadingRecipes]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        flexGrow: 1,
-      }}
-    >
-      <Box>
-        <RecipesFilters />
-        <RecipesLegend />
-      </Box>
-      <Paper sx={{ flexGrow: 1 }}>
-        <DataGrid
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-              },
-            },
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
+          gap: "1rem",
+        }}
+      >
+        <Button
+          sx={{ maxHeight: MAX_INPUT_HEIGHT, maxWidth: "20rem" }}
+          size="large"
+          variant={"contained"}
+          onClick={() => {
+            viewNavigate(CREATE_RECIPE_PAGE_INFO);
           }}
-          loading={isLoadingRecipes}
-          rows={recipes}
-          columns={columnsDefs}
-          density="compact"
-        />
-      </Paper>
-    </Box>
+        >
+          Create recipe
+        </Button>
+        <RecipesFilters />
+        {/* <RecipesLegend /> */}
+
+        <Paper sx={{ flexGrow: 1 }}>
+          <DataGrid
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
+            loading={isLoadingRecipes}
+            rows={recipes}
+            columns={columnsDefs}
+            density="compact"
+          />
+        </Paper>
+      </Box>
+    </>
   );
 };
 export { Recipes };
