@@ -2,7 +2,7 @@ import { Box, Paper, TextField } from "@mui/material";
 import { MAX_INPUT_HEIGHT } from "../consts";
 import SearchIcon from "@mui/icons-material/Search";
 import { useRecipesFiltersStore } from "./RecipesFiltersStore";
-
+import TouchAppIcon from "@mui/icons-material/TouchApp";
 const RecipesFilters = () => {
   const { searchText, setSearchText } = useRecipesFiltersStore();
   return (
@@ -28,6 +28,7 @@ const RecipesFilters = () => {
           }}
           autoComplete={"false"}
         />
+        <TouchAppIcon /> Click a row to edit or delete a recipe
       </Box>
     </Paper>
   );
