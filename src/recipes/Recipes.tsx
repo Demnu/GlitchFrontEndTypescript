@@ -11,35 +11,41 @@ import { useRecipesFiltersStore } from "./RecipesFiltersStore";
 import { MAX_INPUT_HEIGHT } from "../consts";
 import { CREATE_RECIPE_PAGE_INFO } from "../routeStrings";
 import { useViewNavigate } from "../hooks/useViewNavigate";
+import { EditRecipe } from "./RecipeActions/EditRecipe";
 
-const columnsDefs: GridColDef[] = [
-  { field: "id", headerName: "Product Id", width: 90 },
-  { field: "recipeName", headerName: "Recipe Name", flex: 1 },
-  {
-    field: "recipe_beans",
-    headerName: "Beans",
-    flex: 1,
-    renderCell: (params: GridRenderCellParams<unknown, RecipeDto>) => {
-      return (
-        <Box sx={{ display: "flex", gap: "0.5rem" }}>
-          {params.row.recipe_beans.map((rb, i) => (
-            <Chip
-              key={i}
-              label={rb.bean.beanName + " - " + rb.amountOrdered + "g"}
-            />
-          ))}
-        </Box>
-      );
-    },
-  },
-];
 [];
 const Recipes = () => {
-  const [openCreateRecipeDialog, setOpenCreateRecipeDialog] =
+  const [recipeToBeEdited, setRecipeToBeEdited] = useState<RecipeDto | null>(
+    null
+  );
+  const [showEditRecipeDialog, setShowEditRecipeDialog] =
     useState<boolean>(false);
+
   const { searchText } = useRecipesFiltersStore();
   const [recipes, setRecipes] = useState<RecipeDtos>([]);
   const viewNavigate = useViewNavigate();
+
+  const columnsDefs: GridColDef[] = [
+    { field: "id", headerName: "Product Id", width: 90 },
+    { field: "recipeName", headerName: "Recipe Name", width: 400 },
+    {
+      field: "recipe_beans",
+      headerName: "Beans",
+      width: 1000,
+      renderCell: (params: GridRenderCellParams<unknown, RecipeDto>) => {
+        return (
+          <Box sx={{ display: "flex", gap: "0.5rem" }}>
+            {params.row.recipe_beans.map((rb, i) => (
+              <Chip
+                key={i}
+                label={rb.bean.beanName + " - " + rb.amountOrdered + "g"}
+              />
+            ))}
+          </Box>
+        );
+      },
+    },
+  ];
 
   const {
     data: fetchedRecipes,
@@ -109,6 +115,11 @@ const Recipes = () => {
                 },
               },
             }}
+            onRowClick={(params) => {
+              setRecipeToBeEdited(params.row);
+              setShowEditRecipeDialog(true);
+            }}
+            disableSelectionOnClick
             loading={isLoadingRecipes}
             rows={recipes}
             columns={columnsDefs}
@@ -116,6 +127,16 @@ const Recipes = () => {
           />
         </Paper>
       </Box>
+
+      <EditRecipe
+        refetch={refetchRecipes}
+        recipe={recipeToBeEdited}
+        isOpen={showEditRecipeDialog}
+        onClose={() => {
+          setShowEditRecipeDialog(false);
+          setRecipeToBeEdited(null);
+        }}
+      />
     </>
   );
 };

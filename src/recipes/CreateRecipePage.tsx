@@ -1,16 +1,10 @@
 import { Box, Button, Paper, TextField } from "@mui/material";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { api } from "../myApi";
 import { RecipeRequestDto } from "../../glitchHubApi";
 import Select from "react-select";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
 const CreateRecipePage = () => {
   const [errorMsg, setErrorMsg] = useState<String | null>(null);
   const [selectedProduct, setSelectedProduct] = useState({
@@ -19,7 +13,7 @@ const CreateRecipePage = () => {
   });
   const [beans, setBeans] = useState([{ beanName: "", beanAmount: 0 }]);
   const [formattedProducts, setFormattedProducts] = useState<
-    { label: string }[]
+    { label: string; value: string }[]
   >([]);
 
   const {
