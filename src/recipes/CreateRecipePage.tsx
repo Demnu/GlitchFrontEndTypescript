@@ -1,17 +1,9 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Dialog,
-  Paper,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Paper, TextField } from "@mui/material";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../myApi";
-import { BeanDtos, RecipeRequestDto } from "../../glitchHubApi";
+import { RecipeRequestDto } from "../../glitchHubApi";
 import Select from "react-select";
 
 const options = [
