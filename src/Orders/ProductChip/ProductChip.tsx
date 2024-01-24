@@ -36,6 +36,12 @@ const ProductChip = (props: ProductChipProps) => {
     }
   };
 
+  const deleteRecipe = async () => {
+    if (!!recipe) {
+      await api.recipes.deleteRecipeDelete({ recipeId: recipe.id });
+    }
+  };
+
   return (
     <>
       {/* Handle chip */}
@@ -62,14 +68,7 @@ const ProductChip = (props: ProductChipProps) => {
         scroll="body"
         sx={{ maxHeight: "50rem" }}
       >
-        {!!recipe && (
-          <RecipeCard
-            product={product}
-            recipe={recipe}
-            onEdit={() => {}}
-            onDelete={() => {}}
-          />
-        )}
+        {!!recipe && <RecipeCard product={product} recipe={recipe} />}
         {!recipe && !isCreatingRecipe && (
           <ProductCard
             product={product}

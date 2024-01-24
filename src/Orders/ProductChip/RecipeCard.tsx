@@ -1,23 +1,13 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 import { ProductExtendedJsonSchema, RecipeDto } from "../../../glitchHubApi";
 
 interface RecipeCardProps {
   product: ProductExtendedJsonSchema;
   recipe: RecipeDto;
-  onEdit: () => void; // Function to handle edit events
-  onDelete: () => void; // Function to handle delete events
 }
 
 const RecipeCard = (props: RecipeCardProps) => {
-  const { product, recipe, onEdit, onDelete } = props;
+  const { product, recipe } = props;
 
   // Function to format the total weight
   const formatTotalWeight = (total: number) => `${total.toFixed(2)}g`;
@@ -80,16 +70,6 @@ const RecipeCard = (props: RecipeCardProps) => {
           </Typography>
         </Box>
       </CardContent>
-      <CardActions
-        sx={{ justifyContent: "space-between", padding: "0 1.5rem 1.5rem" }}
-      >
-        <Button variant="outlined" color="primary" onClick={onEdit}>
-          Edit Recipe
-        </Button>
-        <Button variant="outlined" color="error" onClick={onDelete}>
-          Delete
-        </Button>
-      </CardActions>
     </Card>
   );
 };
