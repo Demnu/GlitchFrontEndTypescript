@@ -39,7 +39,7 @@ const productTallyColumns = [
   {
     field: "productName",
     headerName: "Product",
-    width: 300,
+    width: 200,
     renderCell: (params: GridRenderCellParams<unknown, ProductsTally>) => {
       return (
         <Chip

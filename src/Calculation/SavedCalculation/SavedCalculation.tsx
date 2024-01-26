@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { api } from "../../myApi";
 import { useEffect, useState } from "react";
 import { SavedCalculationDto } from "../../../glitchHubApi";
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
+import { CalculationTables } from "../CalculationTables";
 
 const SavedCalculation = () => {
   const { calculationId } = useParams();
@@ -31,14 +32,17 @@ const SavedCalculation = () => {
     }
   }, [calculations, isLoading]);
   return (
-    <>
-      Saved Calculation {calculationId}
+    <Box sx={{ display: "flex", flexDirection: "column", flexGrow: "1" }}>
       {!!calculation && (
-        <Box>
-          {calculation.author}, {calculation.calculationName}
-        </Box>
+        <Paper sx={{ display: "flex", p: "0.5rem", gap: "0.2rem" }}>
+          <Box sx={{ fontWeight: "bold" }}> Calculation: </Box>{" "}
+          <Box sx={{ mr: "0.5rem" }}>{calculation.calculationName}</Box>
+          <Box sx={{ fontWeight: "bold" }}>Author:</Box> {calculation.author}
+        </Paper>
       )}
-    </>
+      <Box height={"2rem"}></Box>
+      <CalculationTables calculation={calculation} />
+    </Box>
   );
 };
 export { SavedCalculation };
