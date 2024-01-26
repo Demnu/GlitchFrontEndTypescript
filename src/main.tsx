@@ -19,6 +19,7 @@ import { UnsavedCalculationPage } from "./Calculation/UnsavedCalculation.tsx";
 import { CalculationsList } from "./Calculation/CalculationsList.tsx";
 import { Recipes } from "./recipes/Recipes.tsx";
 import { CreateRecipePage } from "./recipes/CreateRecipePage.tsx";
+import { SavedCalculation } from "./Calculation/SavedCalculation/SavedCalculation.tsx";
 const DashboardLayout = () => {
   return (
     <App>
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
           {
             path: CALCULATIONS_PAGE_INFO.path,
             element: <CalculationsList />,
+          },
+          {
+            path: CALCULATIONS_PAGE_INFO.path + "/calculation/:calculationId",
+            element: <SavedCalculation />,
           },
           {
             path: RECIPES_PAGE_INFO.path,

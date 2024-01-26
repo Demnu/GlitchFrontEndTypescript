@@ -3,6 +3,9 @@ import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../myApi";
 import { SavedCalculation } from "../../glitchHubApi";
+import { useViewNavigate } from "../hooks/useViewNavigate";
+import { CALCULATIONS_PAGE_INFO, createRouteInfo } from "../routeStrings";
+import { useNavigate } from "react-router-dom";
 
 const fetchCalculations = () => {
   return api.calculations
@@ -26,6 +29,8 @@ const calculationsColumns = [
 ];
 
 const CalculationsList = () => {
+  const viewNavigate = useViewNavigate();
+
   const { data: calculations, isLoading } = useQuery(["calculations"], () =>
     fetchCalculations()
   );
@@ -41,6 +46,11 @@ const CalculationsList = () => {
               id: false,
             },
           },
+        }}
+        onRowClick={(params) => {
+          viewNavigate(
+            createRouteInfo("calculation/" + params.id, "Calculation")
+          );
         }}
         rows={!isLoading ? calculations : []}
         columns={calculationsColumns}
