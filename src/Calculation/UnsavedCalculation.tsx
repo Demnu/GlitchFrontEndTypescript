@@ -1,8 +1,6 @@
 import { Box, Button, Paper, TextField } from "@mui/material";
 import { useCalculationStore } from "./CalculationStore";
-import { useEffect, useState } from "react";
-import { useViewNavigate } from "../hooks/useViewNavigate";
-import { ORDERS_PAGE_INFO } from "../routeStrings";
+import { useState } from "react";
 import { CalculationTables } from "./CalculationTables";
 import {
   SaveCalculationRequestDto,
@@ -10,40 +8,41 @@ import {
 } from "../../glitchHubApi";
 import { api } from "../myApi";
 import { MAX_INPUT_HEIGHT } from "../consts";
-
-const saveCalculation = async (
-  author: string,
-  calculationTitle: string,
-  calculation: UnsavedCalculation
-) => {
-  const request: SaveCalculationRequestDto = {
-    author: author,
-    calculationName: calculationTitle,
-    ordersCalculatedInformation: calculation.ordersCalculatedInformation,
-    beansTally: calculation.beansTally,
-    productsTally: calculation.productsTally,
-  };
-  return await api.calculations.saveCalculationCreate(request);
-};
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const UnsavedCalculationPage = () => {
   const { calculation } = useCalculationStore();
-  const viewNavigate = useViewNavigate();
+  const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState<String | null>(null);
   const [author, setAuthor] = useState("");
   const [calculationTitle, setCalculationTitle] = useState("");
 
-  useEffect(() => {
-    if (!calculation) {
-      viewNavigate(ORDERS_PAGE_INFO);
-    } else {
-      console.log(calculation);
-    }
-  }, [calculation, viewNavigate]);
+  const saveCalculationMutation = useMutation({
+    mutationFn: (calculation: SaveCalculationRequestDto) => {
+      return api.calculations.saveCalculationCreate(calculation);
+    },
+    onSuccess: (data) => {
+      navigate("/calculations/calculation/" + data.data.calculationId);
+    },
+    onError: () => {
+      setErrorMsg("Could not save calculation");
+    },
+  });
 
-  const handleSave = async () => {
+  const handleSave = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
     if (calculation) {
-      await saveCalculation(author, calculationTitle, calculation);
-      // Implement post-save logic (like redirecting or showing a message)
+      const request: SaveCalculationRequestDto = {
+        author: author,
+        calculationName: calculationTitle,
+        ordersCalculatedInformation: calculation.ordersCalculatedInformation,
+        beansTally: calculation.beansTally,
+        productsTally: calculation.productsTally,
+      };
+      saveCalculationMutation.mutate(request);
     }
   };
 
@@ -94,6 +93,13 @@ const UnsavedCalculationPage = () => {
           Save Calculation
         </Button>
       </Paper>
+      {!!errorMsg && (
+        <Paper
+          sx={{ color: "red", p: "1rem", fontWeight: "bold", fontSize: "18px" }}
+        >
+          {errorMsg}
+        </Paper>
+      )}
       <CalculationTables calculation={calculation} />
     </Box>
   );

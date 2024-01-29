@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../myApi";
-import { SavedCalculation } from "../../glitchHubApi";
+import { SavedCalculationDto } from "../../glitchHubApi";
 import { useViewNavigate } from "../hooks/useViewNavigate";
 import { CALCULATIONS_PAGE_INFO, createRouteInfo } from "../routeStrings";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,9 @@ const calculationsColumns = [
     headerName: "Created on",
     width: 50,
     flex: 1,
-    renderCell: (params: GridRenderCellParams<unknown, SavedCalculation>) => {
+    renderCell: (
+      params: GridRenderCellParams<unknown, SavedCalculationDto>
+    ) => {
       return <>{new Date(params.row.createdAt).toLocaleDateString()}</>;
     },
   },
@@ -52,7 +54,7 @@ const CalculationsList = () => {
             createRouteInfo("calculation/" + params.id, "Calculation")
           );
         }}
-        rows={!isLoading ? calculations : []}
+        rows={calculations ? calculations : []}
         columns={calculationsColumns}
         disableSelectionOnClick
         density="compact"
