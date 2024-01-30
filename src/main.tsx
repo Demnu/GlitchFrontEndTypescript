@@ -8,7 +8,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Box } from "@mui/material";
 import { Login } from "./Login.tsx";
 import {
+  BLENDS_PAGE_INFO,
   CALCULATIONS_PAGE_INFO,
+  CREATE_BLEND_PAGE_INFO,
   CREATE_RECIPE_PAGE_INFO,
   LOGOUT_PAGE_INFO,
   ORDERS_PAGE_INFO,
@@ -20,6 +22,8 @@ import { CalculationsList } from "./Calculation/CalculationsList.tsx";
 import { Recipes } from "./recipes/Recipes.tsx";
 import { CreateRecipePage } from "./recipes/CreateRecipePage.tsx";
 import { SavedCalculation } from "./Calculation/SavedCalculation/SavedCalculation.tsx";
+import { BlendsList } from "./Blends/BlendsList.tsx";
+import { CreateBlend } from "./Blends/CreateBlend/CreateBlend.tsx";
 const DashboardLayout = () => {
   return (
     <App>
@@ -63,6 +67,8 @@ const router = createBrowserRouter([
             path: UNSAVED_CALCULATION_PAGE_INFO.path,
             element: <UnsavedCalculationPage />,
           },
+          { path: BLENDS_PAGE_INFO.path, element: <BlendsList /> },
+          { path: CREATE_BLEND_PAGE_INFO.path, element: <CreateBlend /> },
         ],
       },
     ],

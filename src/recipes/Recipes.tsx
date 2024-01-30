@@ -1,10 +1,8 @@
-import { Box, Button, Chip, Dialog, Paper } from "@mui/material";
-import { RecipesLegend } from "./RecipesLegend";
+import { Box, Button, Chip, Paper } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { OrderDto, RecipeDto, RecipeDtos } from "../../glitchHubApi";
+import { RecipeDto, RecipeDtos } from "../../glitchHubApi";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../myApi";
-import { ProductChip } from "../Orders/ProductChip/ProductChip";
 import { RecipesFilters } from "./RecipesFilters";
 import { useEffect, useState } from "react";
 import { useRecipesFiltersStore } from "./RecipesFiltersStore";

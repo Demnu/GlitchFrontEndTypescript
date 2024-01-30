@@ -5,6 +5,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CoffeeIcon from "@mui/icons-material/Coffee";
 import { useDashboardLayoutStore } from "./DashboardLayoutStore";
 import { SideDrawerLink } from "./SideDrawerLink";
 
@@ -35,6 +36,7 @@ const SideDrawer = () => {
           link="/calculations"
           Icon={CalculateIcon}
         />
+        <SideDrawerLink title="Blends" link="/blends" Icon={CoffeeIcon} />
         <Divider sx={{ borderBottomWidth: "0.2rem", bgcolor: grey[800] }} />
         <SideDrawerLink title="Logout" link="/" Icon={LogoutIcon} />
       </Box>

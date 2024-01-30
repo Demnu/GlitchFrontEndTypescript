@@ -14,6 +14,15 @@ const CALCULATIONS_PAGE_INFO: RouteInfo = {
   title: "Calculations",
 };
 
+const BLENDS_PAGE_INFO: RouteInfo = {
+  path: "/blends",
+  title: "Blends",
+};
+const CREATE_BLEND_PAGE_INFO: RouteInfo = {
+  path: "/createBlend",
+  title: "Create Blend",
+};
+
 const RECIPES_PAGE_INFO: RouteInfo = { path: "/recipes", title: "Recipes" };
 const CREATE_RECIPE_PAGE_INFO: RouteInfo = {
   path: "/createRecipe",
@@ -35,5 +44,7 @@ export {
   LOGOUT_PAGE_INFO,
   UNSAVED_CALCULATION_PAGE_INFO,
   CREATE_RECIPE_PAGE_INFO,
+  BLENDS_PAGE_INFO,
+  CREATE_BLEND_PAGE_INFO,
 };
 export type { RouteInfo };
