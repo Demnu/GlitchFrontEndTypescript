@@ -1,15 +1,45 @@
 import { Box, Button, Paper, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { MAX_INPUT_HEIGHT } from "../../consts";
-import { RecipeDto, RecipeDtos } from "../../../glitchHubApi";
-import { useQuery } from "@tanstack/react-query";
+import { CreateBlendRequestDto, RecipeDtos } from "../../../glitchHubApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "../../myApi";
 import { RecipeBlendTables } from "./RecipeBlendTables";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
+import useBlendTable from "./useBlendTable";
+import { useViewNavigate } from "../../hooks/useViewNavigate";
+import { BLENDS_PAGE_INFO } from "../../routeStrings";
+
 const CreateBlend = () => {
-  const [blendName, setBlendName] = useState<String>("");
-  const [recipesInBlend, setRecipesInBlend] = useState<RecipeDtos>([]);
-  const [recipesNotInBlend, setRecipesNotInBlend] = useState<RecipeDtos>([]);
+  const viewNavigate = useViewNavigate();
+  const [blendName, setBlendName] = useState("");
+  const {
+    recipesInBlend,
+    recipesNotInBlend,
+    addRecipeToBlend,
+    removeRecipeFromBlend,
+    setRecipesNotInBlend,
+  } = useBlendTable();
+
+  const saveBlendMutation = useMutation({
+    mutationFn: (newBlend: CreateBlendRequestDto) => {
+      return api.blends.createBlendCreate(newBlend);
+    },
+    onSuccess: () => {
+      console.log("hiihihiih");
+      viewNavigate(BLENDS_PAGE_INFO);
+    },
+  });
+
+  const saveBlendClickHandler = () => {
+    let savedBlend: CreateBlendRequestDto = {
+      blendName: blendName,
+      recipeIds:
+        recipesInBlend.length > 0 ? recipesInBlend.map((r) => r.id) : undefined,
+    };
+    saveBlendMutation.mutate(savedBlend);
+  };
+
   const {
     data: fetchedRecipes,
     isLoading: isLoadingRecipes,
@@ -29,31 +59,6 @@ const CreateBlend = () => {
       setRecipesNotInBlend(recipesWithoutBlend);
     }
   }, [fetchedRecipes]);
-
-  const removeRecipeFromBlend = (recipe: RecipeDto) => {
-    // remove recipe from green table
-    setRecipesInBlend((prevRecipesInBlend) =>
-      prevRecipesInBlend.filter((r) => r.recipeName !== recipe.recipeName)
-    );
-
-    // add recipe back to red table
-    setRecipesNotInBlend((prevRecipesNotInBlend) => [
-      ...prevRecipesNotInBlend,
-      recipe,
-    ]);
-  };
-
-  const addRecipeToBlend = (recipe: RecipeDto) => {
-    console.log(recipe);
-
-    // add recipe to green table
-    setRecipesInBlend((prevRecipesInBlend) => [...prevRecipesInBlend, recipe]);
-
-    // remove recipe from red table
-    setRecipesNotInBlend((prevRecipesNotInBlend) =>
-      prevRecipesNotInBlend.filter((r) => r.recipeName !== recipe.recipeName)
-    );
-  };
 
   return (
     <>
@@ -88,7 +93,9 @@ const CreateBlend = () => {
             sx={{ maxHeight: MAX_INPUT_HEIGHT, maxWidth: "20rem" }}
             size="large"
             variant={"contained"}
-            onClick={() => {}}
+            disabled={blendName.length <= 0}
+            onClick={saveBlendClickHandler}
+            type="submit"
           >
             Create blend
           </Button>

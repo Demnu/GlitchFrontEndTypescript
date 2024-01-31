@@ -5,7 +5,6 @@ import "./index.css";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Orders } from "./Orders/Orders.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Box } from "@mui/material";
 import { Login } from "./Login.tsx";
 import {
   BLENDS_PAGE_INFO,
