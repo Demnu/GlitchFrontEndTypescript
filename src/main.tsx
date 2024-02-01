@@ -23,6 +23,7 @@ import { CreateRecipePage } from "./recipes/CreateRecipePage.tsx";
 import { SavedCalculation } from "./Calculation/SavedCalculation/SavedCalculation.tsx";
 import { BlendsList } from "./Blends/BlendsList.tsx";
 import { CreateBlend } from "./Blends/CreateBlend/CreateBlend.tsx";
+import { EditBlend } from "./Blends/EditBlend/EditBlend.tsx";
 const DashboardLayout = () => {
   return (
     <App>
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
             element: <UnsavedCalculationPage />,
           },
           { path: BLENDS_PAGE_INFO.path, element: <BlendsList /> },
+          {
+            path: BLENDS_PAGE_INFO.path + "/blend/:blendId",
+            element: <EditBlend />,
+          },
           { path: CREATE_BLEND_PAGE_INFO.path, element: <CreateBlend /> },
         ],
       },
