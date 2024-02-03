@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import {
+  DeleteBlendRequestDto,
   EditBlendRequestDto,
   ListBlendsQueryRequestDto,
   RecipeDtos,
@@ -62,9 +63,26 @@ const EditBlend = () => {
     editBlendMutation.mutate(editedBlend);
   };
 
+  const deleteBlendClickHandler = () => {
+    let deletedBlend: DeleteBlendRequestDto = {
+      blendId: selectedBlendId,
+    };
+    deleteBlendMutation.mutate(deletedBlend);
+  };
+
   const editBlendMutation = useMutation({
     mutationFn: (editedBlend: EditBlendRequestDto) => {
       return api.blends.editBlendCreate(editedBlend);
+    },
+    onSuccess: () => {
+      refetchBlends();
+      viewNavigate(BLENDS_PAGE_INFO);
+    },
+  });
+
+  const deleteBlendMutation = useMutation({
+    mutationFn: (deleteBlend: DeleteBlendRequestDto) => {
+      return api.blends.deleteBlendDelete(deleteBlend);
     },
     onSuccess: () => {
       refetchBlends();
@@ -138,6 +156,17 @@ const EditBlend = () => {
             type="submit"
           >
             Save changes
+          </Button>
+          <Button
+            sx={{ maxHeight: MAX_INPUT_HEIGHT, maxWidth: "20rem" }}
+            size="large"
+            color="error"
+            variant={"outlined"}
+            disabled={blendName.length <= 0}
+            onClick={deleteBlendClickHandler}
+            type="submit"
+          >
+            Delete blend
           </Button>
           <Box>
             <TouchAppIcon />
